@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, ElementRef, computed, signal, viewChildren } from '@angular/core';
 
 interface INosoBasicInfo {
   hn: string;
@@ -31,6 +31,7 @@ type Activity = {
   imports: [],
   templateUrl: './noso-page01.html',
   styleUrl: './noso-page01.scss',
+  host: { '(window:scroll)': 'onWindowScroll()' },
 })
 export class NosoPage01 {
   pt: INosoBasicInfo = {
@@ -53,6 +54,63 @@ export class NosoPage01 {
     discharge_dx: 'Pneumonia with sepsis',
     chronic_disease: 'Diabetes Mellitus, Hypertension',
   };
+
+  readonly activeTab2 = signal<number>(1);
+  readonly isScrolled = signal<boolean>(false);
+
+  onWindowScroll(): void {
+    this.isScrolled.set(window.scrollY > 80);
+  }
+
+  readonly cathSelected = signal<Record<'single' | 'intermittent' | 'retained', boolean>>({
+    single: false,
+    intermittent: false,
+    retained: false,
+  });
+
+  toggleCath(key: 'single' | 'intermittent' | 'retained'): void {
+    this.cathSelected.update(s => ({ ...s, [key]: !s[key] }));
+  }
+
+  readonly labCols = signal<string[]>([
+    'AMPICILLIN', 'AMOXIC/CLAV', 'AMIKACIN', 'CEFAZOLIN', 'CEFOXITIN',
+    'CEFOTAXIME', 'CEFTAZIDIME', 'CEFUROXIME', 'CHLORAMPHENICOL', 'CIPROFLOXACIN',
+    'CLINDAMYCIN', 'COLISTIN', 'CO-TRIMOXAZOLE', 'ERYTHROMYCIN', 'GENTAMICIN',
+    'IMIPENEM', 'METHICILLIN', 'NETILMICIN', 'NORFLOXACIN', 'OFLOXACIN',
+    'PENICILLIN', 'SULPERAZONE', 'TETRACYCLINE', 'VANCOMYCIN',
+  ]);
+
+  readonly labRows = signal<number[]>([1, 2, 3]);
+
+  // เก็บวันที่ที่เลือกในแต่ละแถว key = row number
+  readonly labRowDates = signal<Record<number, string>>({});
+
+  isLabRowEnabled(row: number): boolean {
+    return !!this.labRowDates()[row];
+  }
+
+  // Date input ของแถวจะ enabled เมื่อทุกแถวก่อนหน้ามีวันที่แล้ว
+  isLabDateEnabled(row: number): boolean {
+    const dates = this.labRowDates();
+    for (let i = 1; i < row; i++) {
+      if (!dates[i]) return false;
+    }
+    return true;
+  }
+
+  onLabDateChange(row: number, ev: Event): void {
+    const value = (ev.target as HTMLInputElement).value;
+    this.labRowDates.update(d => ({ ...d, [row]: value }));
+  }
+
+  readonly labDateInputs = viewChildren<ElementRef<HTMLInputElement>>('labDateInput');
+  readonly labSelects = viewChildren<ElementRef<HTMLSelectElement>>('labSelect');
+
+  clearAntibiogram(): void {
+    this.labRowDates.set({});
+    this.labDateInputs().forEach(ref => (ref.nativeElement.value = ''));
+    this.labSelects().forEach(ref => (ref.nativeElement.value = ''));
+  }
 
    readonly days = signal<number[]>(Array.from({ length: 31 }, (_, i) => i + 1));
     readonly activities = signal<Activity[]>([

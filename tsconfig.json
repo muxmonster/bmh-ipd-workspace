@@ -28,6 +28,12 @@
     },
     {
       "path": "./projects/nosocomial-infect-form/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/computer/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/computer/tsconfig.spec.json"
     }
   ]
 }
