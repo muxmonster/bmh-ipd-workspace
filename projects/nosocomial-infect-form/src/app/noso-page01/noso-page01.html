@@ -1,0 +1,250 @@
+<div class="min-h-screen bg-slate-100 flex justify-center p-4">
+  <!-- Card -->
+  <div class="w-full sm:max-w-md md:max-w-lg lg:max-w-full rounded-2xl shadow-lg p-6 sm:p-8">
+    <div class="flex flex-col items-center justify-center">
+      <h2 class="text-xl sm:text-xl font-semibold text-slate-800">
+        แบบเฝ้าระวังการติดเชื้อในโรงพยาบาล รพ.บ้านหมี่
+      </h2>
+      <h5>(Nosocomial Infection Surveillance Form - BMH)</h5>
+    </div>
+
+    <div class="w-full">
+      <!-- ส่วนที่ 1 ข้อมูลพื้นฐาน -->
+      <div class="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
+        <div class="px-4 py-2 text-sm">
+          <h4 class="font-semibold mb-2">ส่วนที่ 1 ข้อมูลพื้นฐาน</h4>
+          <p>
+            ชื่อ-นามสกุล <span class="font-semibold"> {{ pt.fullName }} </span>| อายุ
+            <span class="font-semibold"> {{ pt.age }} </span> | เพศ
+            <span class="font-semibold"> {{ pt.gender }} </span> | HN
+            <span class="font-semibold"> {{ pt.hn }} </span> | AN
+            <span class="font-semibold"> {{ pt.an }} </span> | WARD
+            <span class="font-semibold"> {{ pt.wardname }} </span> | รับใหม่จาก
+            <span class="font-semibold"> {{ pt.admit_from }} </span> | วันที่รับเข้า
+            <span class="font-semibold"> {{ pt.admit_date }} </span> | รับย้ายจาก
+            <span class="font-semibold"> {{ pt.refer_from }} </span> | วันที่รับย้าย
+            <span class="font-semibold"> {{ pt.refer_date }} </span> | อาการสำคัญแรกรับ
+            <span class="font-semibold"> {{ pt.init_symptom }} </span> | การวินิจฉัยแรกรับ
+            <span class="font-semibold"> {{ pt.discharge_dx }} </span>
+          </p>
+          <p>
+            ขณะแรกรับผู้ป่วยมีการติดเชื้อในโรงพยาบาลอยู่ก่อนหรือไม่ ( ) ไม่มี ( ) มี ระบุอวัยวะ/ระบบ
+            <input type="text" class="border border-slate-400 w-48" /> เชื้อที่พบ
+            <input type="text" class="border border-slate-400 w-48" />
+          </p>
+          <p>
+            การวินิจฉัยแรกรับ
+            <span class="font-semibold"> {{ pt.init_dx }} </span>
+            การวินิจฉัยเพิ่มเติม
+            <span class="font-semibold"> {{ pt.comorbidity }} </span>
+          </p>
+          <p>
+            การวินิจฉัยเพื่อจำหน่าย
+            <span class="font-semibold"> {{ pt.discharge_dx }} </span>
+          </p>
+          <p>
+            โรคประจำตัว
+            <span class="font-semibold"> {{ pt.chronic_disease }} </span>
+          </p>
+          <p>
+            การผ่าตัดครั้งที่ 1 <input type="text" class="border border-slate-400 w-48" /> วันที่
+            <input type="date" class="border border-slate-400 w-32" /> Type ( ) clean ( )
+            clean-contaminated ( ) contaminated ( ) dirty แพทย์
+            <input type="text" class="border border-slate-400 w-48" />
+          </p>
+          <p>
+            การผ่าตัดครั้งที่ 2 <input type="text" class="border border-slate-400 w-48" /> วันที่
+            <input type="date" class="border border-slate-400 w-32" /> Type ( ) clean ( )
+            clean-contaminated ( ) contaminated ( ) dirty แพทย์
+            <input type="text" class="border border-slate-400 w-48" />
+          </p>
+          <p>
+            การผ่าตัดครั้งที่ 3 <input type="text" class="border border-slate-400 w-48" /> วันที่
+            <input type="date" class="border border-slate-400 w-32" /> Type ( ) clean ( )
+            clean-contaminated ( ) contaminated ( ) dirty แพทย์
+            <input type="text" class="border border-slate-400 w-48" />
+          </p>
+          <p>
+            วันที่จำหน่าย <input type="date" class="border border-slate-400 w-32" />
+            <input type="checkbox" /> ทุเลา <input type="checkbox" /> ตาย
+            <input type="checkbox" /> ไม่สมัครใจอยู่ <input type="checkbox" /> ส่งต่อ รพ.
+            <input type="text" class="border border-slate-400 w-48" /> รวมวันนอน
+            <input type="number" class="border border-slate-400 w-24" /> วัน แพทย์ผู้รักษา
+            <input type="text" class="border border-slate-400 w-48" />
+          </p>
+        </div>
+      </div>
+      <!-- ส่วนที่ 2 การใส่อุปกรณ์ทางการแพทย์ -->
+      <div class="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm mt-2">
+        <div class="px-4 py-2 text-sm">
+          <h4 class="font-semibold mb-2">ส่วนที่ 2 การใส่อุปกรณ์ทางการแพทย์</h4>
+
+          <div class="overflow-x-auto">
+            <table
+              class="w-full border-collapse rounded-xl overflow-hidden border border-slate-200 text-sm"
+            >
+              <thead class="bg-slate-100 text-slate-700">
+                <tr>
+                  <th class="px-4 py-3 text-left font-semibold border-b">กิจกรรม</th>
+                  <th class="px-4 py-3 text-left font-semibold border-b w-36">วันที่เริ่ม</th>
+                  <th class="px-4 py-3 text-left font-semibold border-b w-36">วันที่หยุด</th>
+                </tr>
+              </thead>
+
+              <tbody class="divide-y divide-slate-200">
+                <tr>
+                  <td
+                    class="py-1 bg-green-50 hover:border hover:border-green-200 font-semibold text-sm"
+                    colspan="3"
+                  >
+                    ใส่สายสวนปัสสาวะ
+                  </td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="px-4 py-1">Single cath</td>
+                  <td class="px-4 py-1">
+                    <input
+                      type="date"
+                      value="2025-01-01"
+                      class="w-full rounded-lg border border-slate-300 px-2 py-1 text-sm focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                    />
+                  </td>
+                  <td class="px-4 py-1">
+                    <input
+                      type="date"
+                      value="2025-01-15"
+                      class="w-full rounded-lg border border-slate-300 px-2 py-1 text-sm focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                    />
+                  </td>
+                </tr>
+
+                <tr class="hover:bg-slate-50">
+                  <td class="px-4 py-1">Intermittent cath</td>
+                  <td class="px-4 py-1">
+                    <input
+                      type="date"
+                      value="2025-01-01"
+                      class="w-full rounded-lg border border-slate-300 px-2 py-1 text-sm focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                    />
+                  </td>
+                  <td class="px-4 py-1">
+                    <input
+                      type="date"
+                      value="2025-01-15"
+                      class="w-full rounded-lg border border-slate-300 px-2 py-1 text-sm focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                    />
+                  </td>
+                </tr>
+
+                <tr class="hover:bg-slate-50">
+                  <td class="px-4 py-1">Retained cath</td>
+                  <td class="px-4 py-1">
+                    <input
+                      type="date"
+                      value="2025-01-01"
+                      class="w-full rounded-lg border border-slate-300 px-2 py-1 text-sm focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                    />
+                  </td>
+                  <td class="px-4 py-1">
+                    <input
+                      type="date"
+                      value="2025-01-15"
+                      class="w-full rounded-lg border border-slate-300 px-2 py-1 text-sm focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                    />
+                  </td>
+                </tr>
+
+                <tr class="hover:bg-slate-50">
+                  <td class="py-1">ใส่ท่อช่วยหายใจ</td>
+                  <td class="px-4 py-1">
+                    <input
+                      type="date"
+                      value="2025-01-01"
+                      class="w-full rounded-lg border border-slate-300 px-2 py-1 text-sm focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                    />
+                  </td>
+                  <td class="px-4 py-1">
+                    <input
+                      type="date"
+                      value="2025-01-15"
+                      class="w-full rounded-lg border border-slate-300 px-2 py-1 text-sm focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                    />
+                  </td>
+                </tr>
+
+                <tr class="hover:bg-slate-50">
+                  <td class="py-1">เจาะคอ</td>
+                  <td class="px-4 py-1">
+                    <input
+                      type="date"
+                      value="2025-01-01"
+                      class="w-full rounded-lg border border-slate-300 px-2 py-1 text-sm focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                    />
+                  </td>
+                  <td class="px-4 py-1">
+                    <input
+                      type="date"
+                      value="2025-01-15"
+                      class="w-full rounded-lg border border-slate-300 px-2 py-1 text-sm focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ส่วนที่ 2.1 การใส่อุปกรณ์ทางการแพทย์ แบบแยกวัน -->
+      <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div class="overflow-x-auto">
+        <table class="min-w-[1200px] w-full border-collapse text-sm">
+          <!-- Header -->
+          <thead class="sticky top-0 z-20 bg-slate-50">
+            <tr class="border-b border-slate-200">
+              <th class="sticky left-0 z-30 bg-slate-50 px-4 py-3 text-left font-semibold text-slate-700 w-64">
+                กิจกรรม
+              </th>
+
+              @for (d of days(); track d) {
+                <th class="px-2 py-3 text-center font-semibold text-slate-700 w-10">
+                  {{ d }}
+                </th>
+              }
+            </tr>
+          </thead>
+
+          <!-- Body -->
+          <tbody class="divide-y divide-slate-100">
+            @for (a of activities(); track a.id) {
+              <tr class="hover:bg-slate-50">
+                <td class="sticky left-0 z-10 bg-white px-2 py-2 text-slate-800 font-medium">
+                  {{ a.name }}
+                </td>
+
+                @for (d of days(); track d) {
+                  <td class="text-center">
+                    <input
+                      type="checkbox"
+                      class="h-4 w-4 accent-blue-900 cursor-pointer"
+                      [checked]="isChecked(a.id, d)"
+                      (change)="toggle(a.id, d, $event)"
+                      [attr.aria-label]="'กิจกรรม ' + a.name + ' วันที่ ' + d"
+                    />
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Debug (optional) -->
+      <div class="border-t border-slate-200 p-3 text-xs text-slate-600">
+        Checked summary:
+        <span class="font-mono">{{ summary() }}</span>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>

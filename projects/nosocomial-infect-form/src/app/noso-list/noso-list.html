@@ -1,0 +1,132 @@
+<div class="min-h-screen bg-slate-100 flex justify-center p-4">
+  <!-- Card -->
+  <div class="w-full sm:max-w-md md:max-w-lg lg:max-w-full rounded-2xl shadow-lg p-6 sm:p-8">
+    <div class="flex align-items-center justify-between">
+      <h2 class="text-xl sm:text-2xl font-semibold text-slate-800 mb-3">
+        แบบเฝ้าระวังการติดเชื้อในโรงพยาบาล AN :
+      </h2>
+    </div>
+
+    <div class="w-full">
+      <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <!-- Toolbar (optional) -->
+        <div class="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <h2 class="text-base font-semibold text-slate-800">
+            Nosocomial Infaction Surveillance Form
+          </h2>
+
+          <div class="flex gap-2">
+            <input
+              type="text"
+              placeholder="ค้นหา noso id / diagnosis..."
+              class="w-full sm:w-64 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-slate-300"
+            />
+            <button
+              type="button"
+              [routerLink]="['/add', an()]"
+              class="rounded-xl bg-lime-200 hover:cursor-pointer px-2 py-2 text-sm font-medium font-semibold hover:bg-lime-300 transition"
+            >
+              ➕ เพิ่มรายการ
+            </button>
+          </div>
+        </div>
+
+        <!-- Table wrapper (horizontal scroll on small screens) -->
+        <div class="overflow-x-auto">
+          <table class="min-w-[720px] w-full text-left text-sm">
+            <thead class="sticky top-0 bg-slate-50 text-slate-700">
+              <tr class="border-y border-slate-200">
+                <th class="px-4 py-3 font-semibold w-36">noso id</th>
+                <th class="px-4 py-3 font-semibold">อาการแรกรับ</th>
+                <th class="px-4 py-3 font-semibold">การวินิจฉัยแรกรับ</th>
+                <th class="px-4 py-3 font-semibold w-40">action</th>
+              </tr>
+            </thead>
+
+            <tbody class="divide-y divide-slate-100">
+              <tr class="hover:bg-slate-50">
+                <td class="px-4 py-3 font-mono text-xs text-slate-700">NSO-000123</td>
+                <td class="px-4 py-3 text-slate-800">
+                  <p
+                    class="line-clamp-2 whitespace-normal break-words"
+                    title="ไข้สูง 39°C หนาวสั่น ไอมีเสมหะ แน่นหน้าอก หายใจเหนื่อย ตรวจพบ SpO2 92%"
+                  >
+                    ไข้สูง 39°C หนาวสั่น ไอมีเสมหะ แน่นหน้าอก หายใจเหนื่อย ตรวจพบ SpO2 92%
+                  </p>
+                </td>
+                <td class="px-4 py-3 text-slate-800">Pneumonia (สงสัยติดเชื้อในโรงพยาบาล)</td>
+                <td class="px-4 py-3">
+                  <div class="flex items-center gap-2">
+                    <button
+                      class="rounded-xl border border-green-200 px-3 py-1.5 text-sm text-slate-700 hover:bg-green-100 transition"
+                    >
+                      🖨️
+                    </button>
+                    <button
+                      class="rounded-xl bg-blue-200 px-3 py-1.5 text-sm text-white hover:bg-blue-300 transition"
+                    >
+                      📝
+                    </button>
+                    <button
+                      class="rounded-xl bg-red-200 px-3 py-1.5 text-sm text-white hover:bg-red-300 transition"
+                    >
+                      ❌
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr class="hover:bg-slate-50">
+                <td class="px-4 py-3 font-mono text-xs text-slate-700">NSO-000124</td>
+                <td class="px-4 py-3 text-slate-800">ปวดท้อง คลื่นไส้ อาเจียน</td>
+                <td class="px-4 py-3 text-slate-800">Acute gastroenteritis</td>
+                <td class="px-4 py-3">
+                  <div class="flex items-center gap-2">
+                    <button
+                      class="rounded-xl border border-slate-200 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-100 transition"
+                    >
+                      ดู
+                    </button>
+                    <button
+                      class="rounded-xl bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700 transition"
+                    >
+                      แก้ไข
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Empty state example -->
+              <!--
+          <tr>
+            <td colspan="4" class="px-4 py-10 text-center text-slate-500">
+              ไม่พบข้อมูล
+            </td>
+          </tr>
+          -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Footer (optional) -->
+        <div
+          class="flex items-center justify-between gap-3 border-t border-slate-200 p-4 text-sm text-slate-600"
+        >
+          <span>แสดง 1–2 จาก 2 รายการ</span>
+          <div class="flex gap-2">
+            <button
+              class="rounded-xl border border-slate-200 px-3 py-1.5 hover:bg-slate-50 transition"
+            >
+              ก่อนหน้า
+            </button>
+            <button
+              class="rounded-xl border border-slate-200 px-3 py-1.5 hover:bg-slate-50 transition"
+            >
+              ถัดไป
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
