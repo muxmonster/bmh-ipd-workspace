@@ -498,7 +498,10 @@
             <label class="checkbox-label block"><input type="checkbox" formControlName="orPositionProne" /> Prone</label>
             <label class="checkbox-label block"><input type="checkbox" formControlName="orPositionLithotomy" /> Lithotomy</label>
             <div class="text-row">
-              <label for="orPositionOther">อื่นๆ</label>
+              <label class="checkbox-label" for="orPositionOtherChecked">
+                <input id="orPositionOtherChecked" type="checkbox" formControlName="orPositionOtherChecked" />
+                อื่นๆ
+              </label>
               <input id="orPositionOther" type="text" formControlName="orPositionOther" class="inline-input" />
             </div>
           </div>
@@ -506,7 +509,10 @@
           <div class="sub-section">
             <span class="sub-label">การเตรียมอุปกรณ์พิเศษ</span>
             <div class="text-row">
-              <label for="orSpecialEquipment">ระบุ</label>
+              <label class="checkbox-label" for="orSpecialEquipmentChecked">
+                <input id="orSpecialEquipmentChecked" type="checkbox" formControlName="orSpecialEquipmentChecked" />
+                ระบุ
+              </label>
               <input id="orSpecialEquipment" type="text" formControlName="orSpecialEquipment" class="inline-input" />
             </div>
           </div>

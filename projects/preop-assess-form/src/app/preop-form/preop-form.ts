@@ -119,8 +119,10 @@ export class PreopForm {
     orPositionLateralRt: [false],
     orPositionProne: [false],
     orPositionLithotomy: [false],
-    orPositionOther: [''],
-    orSpecialEquipment: [''],
+    orPositionOtherChecked: [false],
+    orPositionOther: [{ value: '', disabled: true }],
+    orSpecialEquipmentChecked: [false],
+    orSpecialEquipment: [{ value: '', disabled: true }],
     orConfirmPatient: [false],
     orWristBand: [false],
     orMedicalRecord: [false],
@@ -199,6 +201,10 @@ export class PreopForm {
     const npoMinuteControl = this.form.get('npoMinute');
     const othersCheckedControl = this.form.get('othersChecked');
     const othersControl = this.form.get('others');
+    const orPositionOtherCheckedControl = this.form.get('orPositionOtherChecked');
+    const orPositionOtherControl = this.form.get('orPositionOther');
+    const orSpecialEquipmentCheckedControl = this.form.get('orSpecialEquipmentChecked');
+    const orSpecialEquipmentControl = this.form.get('orSpecialEquipment');
 
     labOtherCheckedControl?.valueChanges
       .pipe(startWith(labOtherCheckedControl.value), takeUntilDestroyed())
@@ -249,6 +255,28 @@ export class PreopForm {
         }
 
         othersControl?.disable({ emitEvent: false });
+      });
+
+    orPositionOtherCheckedControl?.valueChanges
+      .pipe(startWith(orPositionOtherCheckedControl.value), takeUntilDestroyed())
+      .subscribe((isChecked) => {
+        if (isChecked) {
+          orPositionOtherControl?.enable({ emitEvent: false });
+          return;
+        }
+
+        orPositionOtherControl?.disable({ emitEvent: false });
+      });
+
+    orSpecialEquipmentCheckedControl?.valueChanges
+      .pipe(startWith(orSpecialEquipmentCheckedControl.value), takeUntilDestroyed())
+      .subscribe((isChecked) => {
+        if (isChecked) {
+          orSpecialEquipmentControl?.enable({ emitEvent: false });
+          return;
+        }
+
+        orSpecialEquipmentControl?.disable({ emitEvent: false });
       });
 
     const p = this.patient();
