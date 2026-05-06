@@ -1,0 +1,581 @@
+.preop-form-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Sarabun', sans-serif;
+  font-size: 0.875rem;
+}
+
+.step-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background: #f0f4ff;
+  border: 1px solid #c7d6f5;
+  border-top: none;
+  border-bottom: none;
+  font-size: 0.82rem;
+
+  .step-current {
+    font-weight: 700;
+    color: #1a56a0;
+    background: #dce8ff;
+    padding: 0.15rem 0.6rem;
+    border-radius: 1rem;
+  }
+
+  .step-btn {
+    color: #1a56a0;
+    text-decoration: none;
+    font-weight: 600;
+
+    &:hover { text-decoration: underline; }
+  }
+}
+
+.no-patient {
+  text-align: center;
+  padding: 2rem;
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 0.5rem;
+  margin: 1rem;
+
+  p { margin: 0.25rem 0; }
+
+  .hint {
+    color: #555;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+  }
+
+  code {
+    background: #f1f1f1;
+    padding: 0.1rem 0.3rem;
+    border-radius: 0.25rem;
+    font-size: 0.8rem;
+  }
+}
+
+.form-wrapper {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+
+/* ====== Form Title ====== */
+.form-title {
+  text-align: center;
+  padding: 0.75rem 1rem 0.25rem;
+  border-bottom: 1px solid #ddd;
+
+  h1 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  h2 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin: 0.1rem 0 0;
+    color: #444;
+  }
+}
+
+/* ====== Form Header Grid ====== */
+.form-header-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid #ddd;
+  background: #f8f9fa;
+
+  .field-row {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex: 1;
+    min-width: 180px;
+
+    &.span-2 {
+      flex: 2;
+      min-width: 300px;
+    }
+
+    label {
+      white-space: nowrap;
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: #333;
+    }
+
+    input[type='text'] {
+      flex: 1;
+      border: none;
+      border-bottom: 1px solid #999;
+      background: transparent;
+      font-size: 0.875rem;
+      padding: 0.1rem 0.2rem;
+      outline: none;
+
+      &:focus {
+        border-bottom-color: #1a56a0;
+      }
+    }
+  }
+
+  .field-row-group {
+    flex-basis: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+    align-items: center;
+
+    .field-row {
+      flex: 1;
+      min-width: 140px;
+    }
+  }
+
+  .surgery-type-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .label-text {
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: #333;
+      white-space: nowrap;
+    }
+  }
+}
+
+/* ====== 3-column grid ====== */
+.three-col-grid {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 1.2fr;
+  border-top: 1px solid #ddd;
+
+  section {
+    padding: 0.5rem 0.75rem;
+    border-right: 1px solid #ddd;
+
+    &:last-child {
+      border-right: none;
+    }
+
+    h3 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-align: center;
+      margin: 0 0 0.5rem;
+      padding: 0.25rem;
+      background: #1a56a0;
+      color: #fff;
+      border-radius: 0.25rem;
+    }
+  }
+}
+
+/* ====== Shared form elements ====== */
+.radio-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+}
+
+.checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+
+  &.block {
+    display: flex;
+    margin-bottom: 0.2rem;
+  }
+
+  &.inline {
+    margin-right: 0.4rem;
+    margin-bottom: 0.2rem;
+  }
+}
+
+.text-row {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-bottom: 0.2rem;
+  flex-wrap: wrap;
+
+  label {
+    white-space: nowrap;
+    font-size: 0.8rem;
+    color: #333;
+  }
+
+  span {
+    white-space: nowrap;
+    font-size: 0.8rem;
+  }
+}
+
+.radio-row {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 0.25rem;
+  flex-wrap: wrap;
+
+  .item-label {
+    font-size: 0.8rem;
+    color: #333;
+    margin-right: 0.25rem;
+  }
+}
+
+.checkbox-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.item-label {
+  font-size: 0.8rem;
+  color: #333;
+}
+
+.inline-input {
+  border: none;
+  border-bottom: 1px solid #999;
+  background: transparent;
+  font-size: 0.82rem;
+  padding: 0.1rem 0.2rem;
+  outline: none;
+  min-width: 60px;
+  flex: 1;
+
+  &.short {
+    max-width: 50px;
+    flex: none;
+  }
+
+  &:focus {
+    border-bottom-color: #1a56a0;
+  }
+}
+
+/* ====== Shift rows ====== */
+.shift-header {
+  display: grid;
+  grid-template-columns: 1fr repeat(4, 36px);
+  gap: 2px;
+  margin-bottom: 2px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-align: center;
+  color: #555;
+  padding: 0 0 0 0;
+
+  .shift-label {
+    background: #e9ecef;
+    border-radius: 2px;
+    padding: 1px;
+  }
+}
+
+.shift-row {
+  display: grid;
+  grid-template-columns: 1fr repeat(4, 36px);
+  gap: 2px;
+  align-items: center;
+  margin-bottom: 3px;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 2px;
+
+  .item-label {
+    font-size: 0.78rem;
+  }
+
+  .shift-check {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+/* ====== Lab section ====== */
+.lab-section {
+  margin: 0.3rem 0;
+
+  .item-label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.78rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .lab-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem 0.5rem;
+
+    .lab-other {
+      width: 100%;
+    }
+  }
+}
+
+/* ====== Medication table ====== */
+.med-section {
+  margin-top: 0.4rem;
+  border-top: 1px solid #ddd;
+  padding-top: 0.3rem;
+
+  .med-header, .med-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .med-header {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #555;
+    margin-bottom: 2px;
+    text-align: center;
+
+    .med-col-name { text-align: left; }
+  }
+
+  .med-row {
+    margin-bottom: 3px;
+
+    input {
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid #ccc;
+      font-size: 0.78rem;
+      padding: 1px 2px;
+      outline: none;
+      background: transparent;
+
+      &:focus {
+        border-bottom-color: #1a56a0;
+      }
+    }
+  }
+}
+
+/* ====== Sub sections ====== */
+.sub-section {
+  margin: 0.4rem 0;
+  padding: 0.3rem 0.4rem;
+  border-left: 2px solid #1a56a0;
+  background: #f7f9ff;
+  border-radius: 0 0.25rem 0.25rem 0;
+
+  .sub-label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #1a56a0;
+    margin-bottom: 0.2rem;
+  }
+}
+
+/* ====== ASA Class ====== */
+.asa-row {
+  margin: 0.3rem 0;
+
+  .sub-label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+  }
+
+  .asa-options {
+    display: flex;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+  }
+
+  .radio-label.asa {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+}
+
+/* ====== Signer row ====== */
+.signer-row {
+  margin-top: 0.5rem;
+  border-top: 1px dashed #ccc;
+  padding-top: 0.3rem;
+
+  label {
+    font-weight: 600;
+    font-size: 0.8rem;
+  }
+}
+
+/* ====== Form Actions ====== */
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid #ddd;
+  background: #f8f9fa;
+
+  button {
+    padding: 0.4rem 1.5rem;
+    border: none;
+    border-radius: 0.3rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &.btn-save {
+      background: #1a56a0;
+      color: #fff;
+
+      &:hover { background: #154080; }
+    }
+
+    &.btn-print {
+      background: #6c757d;
+      color: #fff;
+
+      &:hover { background: #565e64; }
+    }
+  }
+}
+
+/* ====== Responsive ====== */
+@media (max-width: 900px) {
+  .three-col-grid {
+    grid-template-columns: 1fr;
+
+    section {
+      border-right: none;
+      border-bottom: 1px solid #ddd;
+    }
+  }
+}
+
+@page { size: A4 portrait; margin: 8mm 10mm; }
+
+@media print {
+  .step-nav,
+  .form-actions { display: none !important; }
+
+  .preop-form-page {
+    max-width: 100%;
+    font-size: 0.62rem;
+  }
+
+  .form-wrapper {
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .form-title {
+    padding: 0.2rem 0;
+    text-align: center;
+    h1 { font-size: 0.9rem; margin: 0; }
+    h2 { font-size: 0.75rem; margin: 0; }
+  }
+
+  .form-header-grid {
+    font-size: 0.62rem;
+    gap: 0.2rem;
+    padding: 0.2rem 0;
+  }
+
+  .three-col-grid {
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 0;
+
+    section {
+      padding: 0.2rem 0.3rem;
+    }
+
+    h3 {
+      font-size: 0.68rem !important;
+      padding: 0.1rem !important;
+      margin-bottom: 0.2rem !important;
+      background: none !important;
+      color: #000 !important;
+      border-bottom: 1pt solid #000;
+      border-radius: 0 !important;
+    }
+  }
+
+  .col-checklist,
+  .col-or-nurse,
+  .col-anesthesia {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .shift-header,
+  .shift-label {
+    font-size: 0.58rem;
+  }
+
+  .checklist-row {
+    font-size: 0.6rem;
+    padding: 0.05rem 0;
+  }
+
+  .lab-section,
+  .med-section,
+  .sub-section {
+    margin-top: 0.2rem;
+
+    h4 {
+      font-size: 0.65rem !important;
+      margin: 0.1rem 0 0.05rem;
+    }
+  }
+
+  input[type='text'],
+  input[type='date'],
+  select,
+  textarea {
+    border: none;
+    border-bottom: 0.5pt solid #888;
+    border-radius: 0;
+    background: transparent !important;
+    padding: 0;
+    font-size: 0.6rem;
+    height: auto;
+    min-height: 0;
+  }
+
+  .radio-label,
+  .inline-radio {
+    font-size: 0.6rem;
+    gap: 0.1rem;
+  }
+
+  .field-row label,
+  .text-row label {
+    font-size: 0.6rem;
+  }
+}

@@ -1,0 +1,27 @@
+<div class="patient-header">
+  <div class="hospital-name">
+    <span>โรงพยาบาลบ้านหมี่ ลพบุรี</span>
+  </div>
+  <div class="patient-info-grid">
+    <div class="info-item">
+      <span class="label">ชื่อ-นามสกุล</span>
+      <span class="value">{{ patient().fullName }}</span>
+    </div>
+    <div class="info-item">
+      <span class="label">อายุ</span>
+      <span class="value">{{ patient().age }} ปี</span>
+    </div>
+    <div class="info-item">
+      <span class="label">HN</span>
+      <span class="value">{{ patient().hn }}</span>
+    </div>
+    <div class="info-item">
+      <span class="label">AN</span>
+      <span class="value">{{ patient().an }}</span>
+    </div>
+    <div class="info-item">
+      <span class="label">Ward</span>
+      <span class="value">{{ patient().ward }}</span>
+    </div>
+  </div>
+</div>

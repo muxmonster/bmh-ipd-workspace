@@ -1,0 +1,436 @@
+.checklist-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Sarabun', sans-serif;
+  font-size: 0.875rem;
+}
+
+/* ====== No patient ====== */
+.no-patient {
+  text-align: center;
+  padding: 2rem;
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 0.5rem;
+  margin: 1rem;
+
+  code {
+    background: #f1f1f1;
+    padding: 0.1rem 0.3rem;
+    border-radius: 0.25rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* ====== Step navigation ====== */
+.step-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background: #f0f4ff;
+  border: 1px solid #c7d6f5;
+  border-top: none;
+  border-bottom: none;
+  font-size: 0.82rem;
+
+  .step-btn {
+    color: #1a56a0;
+    text-decoration: none;
+    font-weight: 600;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .step-current {
+    font-weight: 700;
+    color: #1a56a0;
+    background: #dce8ff;
+    padding: 0.15rem 0.6rem;
+    border-radius: 1rem;
+  }
+}
+
+/* ====== Form wrapper ====== */
+.form-wrapper {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+
+/* ====== Form title ====== */
+.form-title {
+  text-align: center;
+  padding: 0.6rem 1rem 0.25rem;
+  border-bottom: 1px solid #ddd;
+
+  h1 {
+    font-size: 1.05rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    margin: 0;
+  }
+
+  h2 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 0.1rem 0 0;
+    color: #444;
+  }
+}
+
+/* ====== 3-column grid ====== */
+.three-col-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-top: 1px solid #ddd;
+
+  section {
+    padding: 0.6rem 0.75rem;
+    border-right: 1px solid #ddd;
+
+    &:last-child {
+      border-right: none;
+    }
+  }
+}
+
+/* ====== Section titles ====== */
+.section-title {
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-align: center;
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.3rem;
+  color: #fff;
+  margin: 0 0 0.4rem;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+
+  .section-subtitle {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+
+  &.signin  { background: #1d7a3a; }
+  &.timeout { background: #c7520a; }
+  &.signout { background: #8b1a1a; }
+}
+
+.by-line {
+  font-size: 0.75rem;
+  color: #555;
+  margin: 0 0 0.5rem;
+  font-style: italic;
+}
+
+/* ====== Checklist items ====== */
+.checklist-item {
+  margin-bottom: 0.6rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #f0f0f0;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.item-text {
+  margin: 0 0 0.25rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.item-note {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+/* ====== Radio & Checkbox groups ====== */
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.75rem;
+  margin: 0.2rem 0;
+}
+
+.radio-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+
+  input[type='radio'] {
+    accent-color: #1a56a0;
+    cursor: pointer;
+  }
+}
+
+.checkbox-label {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.25rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+  line-height: 1.4;
+
+  &.block {
+    display: flex;
+    margin-bottom: 0.2rem;
+  }
+
+  input[type='checkbox'] {
+    accent-color: #1a56a0;
+    cursor: pointer;
+    margin-top: 0.1rem;
+    flex-shrink: 0;
+  }
+}
+
+.checkbox-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.75rem;
+  margin: 0.2rem 0;
+
+  &.indent {
+    padding-left: 0.75rem;
+  }
+}
+
+/* ====== Sub items ====== */
+.sub-item {
+  margin: 0.3rem 0 0.3rem 0.5rem;
+  padding-left: 0.5rem;
+  border-left: 2px solid #ddd;
+
+  .sub-label {
+    margin: 0 0 0.15rem;
+    font-size: 0.8rem;
+    color: #333;
+  }
+}
+
+.risk-note {
+  font-size: 0.75rem;
+  color: #c7520a;
+  font-style: italic;
+  margin: 0.1rem 0;
+}
+
+/* ====== Sub roles ====== */
+.sub-role {
+  margin: 0.4rem 0;
+  padding: 0.35rem 0.5rem;
+  border-left: 3px solid #c7520a;
+  background: #fff9f5;
+  border-radius: 0 0.25rem 0.25rem 0;
+
+  .role-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #c7520a;
+    margin-bottom: 0.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+}
+
+/* ====== Inline fields ====== */
+.inline-field {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0.2rem 0;
+  flex-wrap: wrap;
+
+  label {
+    font-size: 0.8rem;
+    white-space: nowrap;
+    color: #333;
+  }
+}
+
+.note-input {
+  border: none;
+  border-bottom: 1px solid #999;
+  background: transparent;
+  font-size: 0.82rem;
+  padding: 0.1rem 0.2rem;
+  outline: none;
+  flex: 1;
+  min-width: 80px;
+  font-family: inherit;
+
+  &.short {
+    max-width: 60px;
+    flex: none;
+  }
+
+  &:focus {
+    border-bottom-color: #1a56a0;
+  }
+}
+
+/* ====== Timeout continued (items 5, 6 in right col) ====== */
+.timeout-continued {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #8b1a1a;
+}
+
+/* ====== Signature section ====== */
+.signature-section {
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed #ccc;
+
+  .sig-row {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-bottom: 0.4rem;
+
+    label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .sig-input {
+      flex: 1;
+      border: none;
+      border-bottom: 1px solid #999;
+      background: transparent;
+      font-size: 0.82rem;
+      padding: 0.1rem 0.2rem;
+      outline: none;
+      font-family: inherit;
+
+      &:focus {
+        border-bottom-color: #1a56a0;
+      }
+    }
+
+    .sig-title {
+      font-size: 0.78rem;
+      color: #555;
+      white-space: nowrap;
+    }
+  }
+}
+
+/* ====== Form actions ====== */
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid #ddd;
+  background: #f8f9fa;
+
+  button {
+    padding: 0.4rem 1.5rem;
+    border: none;
+    border-radius: 0.3rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &.btn-save {
+      background: #1a56a0;
+      color: #fff;
+      &:hover { background: #154080; }
+    }
+
+    &.btn-print {
+      background: #6c757d;
+      color: #fff;
+      &:hover { background: #565e64; }
+    }
+  }
+}
+
+/* ====== Responsive ====== */
+@media (max-width: 900px) {
+  .three-col-grid {
+    grid-template-columns: 1fr;
+
+    section {
+      border-right: none;
+      border-bottom: 1px solid #ddd;
+    }
+  }
+}
+
+@page { size: A4 landscape; margin: 8mm 10mm; }
+
+@media print {
+  .form-actions,
+  .step-nav { display: none !important; }
+
+  .checklist-page {
+    max-width: 100%;
+    font-size: 0.72rem;
+  }
+
+  .form-wrapper {
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .form-title {
+    padding: 0.3rem 0;
+    text-align: center;
+    h1 { font-size: 1rem; margin: 0; }
+    h2 { font-size: 0.85rem; margin: 0; }
+  }
+
+  .three-col-grid {
+    grid-template-columns: 1fr 1fr 1fr !important;
+    gap: 0;
+  }
+
+  .col-sign-in,
+  .col-time-out,
+  .col-sign-out {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .section-header {
+    font-size: 0.75rem !important;
+    padding: 0.15rem !important;
+    background: none !important;
+    color: #000 !important;
+    border-bottom: 1pt solid #000;
+  }
+
+  input[type='text'],
+  input[type='date'],
+  select,
+  textarea {
+    border: none;
+    border-bottom: 0.5pt solid #888;
+    border-radius: 0;
+    background: transparent !important;
+    padding: 0 0.1rem;
+    font-size: 0.68rem;
+  }
+
+  .checklist-item {
+    font-size: 0.68rem;
+    padding: 0.05rem 0;
+  }
+
+  .radio-label {
+    font-size: 0.65rem;
+  }
+}

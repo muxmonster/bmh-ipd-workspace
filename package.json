@@ -4,7 +4,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:preop": "ng serve preop-assess-form --port 4201",
     "build": "ng build",
+    "build:preop": "ng build preop-assess-form",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

@@ -1,0 +1,29 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #e9ecef;
+  font-family: 'Sarabun', sans-serif;
+  font-size: 14px;
+  color: #212529;
+}
+
+body {
+  padding: 1rem;
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+  cursor: pointer;
+  accent-color: #1a56a0;
+}
+
+@media print {
+  body {
+    background: #fff !important;
+    padding: 0 !important;
+  }
+}

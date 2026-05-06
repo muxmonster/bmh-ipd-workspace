@@ -1,0 +1,446 @@
+<div class="preop-form-page">
+
+  @if (patient()) {
+    <app-patient-header [patient]="patient()!" />
+  } @else {
+    <div class="no-patient" role="alert">
+      <p>ไม่พบข้อมูลผู้ป่วย AN: <strong>{{ form.value.surgeryType }}</strong></p>
+      <p class="hint">กรุณาระบุ AN ผ่าน query string เช่น <code>?an=690001111</code></p>
+    </div>
+  }
+
+  @if (patient()) {
+    <nav class="step-nav" aria-label="ขั้นตอน">
+      <span class="step-current">Step 1: แบบประเมินก่อนผ่าตัด</span>
+      <a [routerLink]="['/checklist']" [queryParams]="{ an: patient()!.an }" class="step-btn">
+        Step 2: Surgical Checklist →
+      </a>
+    </nav>
+  }
+
+  @if (patient()) {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-wrapper" novalidate>
+
+      <!-- ====== ส่วนหัวฟอร์ม ====== -->
+      <div class="form-title">
+        <h1>แบบบันทึกการประเมินผู้ป่วยก่อนผ่าตัด</h1>
+        <h2>โรงพยาบาลบ้านหมี่ ลพบุรี</h2>
+      </div>
+
+      <div class="form-header-grid">
+        <div class="field-row">
+          <label for="surgeryDate">วันที่ผ่าตัด</label>
+          <input id="surgeryDate" type="text" formControlName="surgeryDate" />
+        </div>
+        <div class="field-row">
+          <label for="diagnosis">Dx</label>
+          <input id="diagnosis" type="text" formControlName="diagnosis" />
+        </div>
+        <div class="field-row span-2">
+          <label for="surgicalProcedure">การผ่าตัด</label>
+          <input id="surgicalProcedure" type="text" formControlName="surgicalProcedure" />
+        </div>
+        <div class="field-row">
+          <label for="surgeon">แพทย์ผ่าตัด</label>
+          <input id="surgeon" type="text" formControlName="surgeon" />
+        </div>
+        <div class="field-row-group">
+          <div class="field-row">
+            <label for="setDate">ว.ด.ป. ที่ set ผ่าตัด</label>
+            <input id="setDate" type="text" formControlName="setDate" />
+          </div>
+          <div class="field-row">
+            <label for="setBy">ผู้ set</label>
+            <input id="setBy" type="text" formControlName="setBy" />
+          </div>
+          <div class="field-row surgery-type-row">
+            <span class="label-text">ประเภท</span>
+            @for (t of surgeryTypes; track t.value) {
+              <label class="radio-label">
+                <input type="radio" formControlName="surgeryType" [value]="t.value" />
+                {{ t.label }}
+              </label>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== 3 คอลัมน์หลัก ====== -->
+      <div class="three-col-grid">
+
+        <!-- ===== คอลัมน์ 1: รายการตรวจสอบ ===== -->
+        <section class="col-checklist" aria-labelledby="checklist-heading">
+          <h3 id="checklist-heading">รายการที่ตรวจสอบ</h3>
+
+          <!-- Shift header -->
+          <div class="shift-header" aria-hidden="true">
+            <span class="item-label"></span>
+            @for (s of shiftGroups; track s.key) {
+              <span class="shift-label">{{ s.label }}</span>
+            }
+          </div>
+
+          <!-- อธิบายแผนการรักษา / Mark site -->
+          <div class="shift-row" formGroupName="markSite">
+            <span class="item-label">อธิบายแผนการรักษา / Mark site</span>
+            @for (s of shiftGroups; track s.key) {
+              <label class="shift-check" [attr.aria-label]="'Mark site ' + s.label">
+                <input type="checkbox" [formControlName]="s.key" />
+              </label>
+            }
+          </div>
+
+          <!-- จองเลือด -->
+          <div class="text-row">
+            <label class="item-label" for="bloodReservation">จองเลือด ชนิด</label>
+            <input id="bloodReservation" type="text" formControlName="bloodType" class="inline-input" />
+            <span>จำนวน</span>
+            <input type="text" formControlName="bloodReservation" class="inline-input short" />
+          </div>
+
+          <!-- จอง ICU -->
+          <div class="radio-row">
+            <span class="item-label">จอง ICU</span>
+            <label class="radio-label"><input type="radio" formControlName="icuReserve" value="got" /> ได้</label>
+            <label class="radio-label"><input type="radio" formControlName="icuReserve" value="notGot" /> ไม่ได้</label>
+            <label class="radio-label"><input type="radio" formControlName="icuReserve" value="notNeeded" /> ไม่ต้องจอง</label>
+          </div>
+
+          <!-- ยินยอม -->
+          <div class="checkbox-row">
+            <label class="checkbox-label"><input type="checkbox" formControlName="consentSigned" /> เซ็นยินยอมการทำผ่าตัด</label>
+            <label class="checkbox-label"><input type="checkbox" formControlName="witnessSigned" /> พยาน</label>
+          </div>
+
+          <!-- ทำความสะอาดร่างกาย -->
+          <div class="shift-row" formGroupName="bodyClean">
+            <span class="item-label">ทำความสะอาดร่างกายทั่วไป</span>
+            @for (s of shiftGroups; track s.key) {
+              <label class="shift-check" [attr.aria-label]="'ทำความสะอาด ' + s.label">
+                <input type="checkbox" [formControlName]="s.key" />
+              </label>
+            }
+          </div>
+
+          <!-- อาบน้ำ สระผม -->
+          <div class="shift-row" formGroupName="bathShampoo">
+            <span class="item-label">อาบน้ำ สระผม ตรวจของมีค่าต่างๆ</span>
+            @for (s of shiftGroups; track s.key) {
+              <label class="shift-check" [attr.aria-label]="'อาบน้ำ สระผม ' + s.label">
+                <input type="checkbox" [formControlName]="s.key" />
+              </label>
+            }
+          </div>
+
+          <!-- ผิวหนัง -->
+          <div class="radio-row">
+            <span class="item-label">ผิวหนังบริเวณที่ผ่าตัด</span>
+            <label class="radio-label"><input type="radio" formControlName="skinCondition" value="normal" /> ปกติ</label>
+            <label class="radio-label"><input type="radio" formControlName="skinCondition" value="abnormal" /> ผิดปกติ</label>
+          </div>
+
+          <!-- Lab ผล -->
+          <div class="lab-section">
+            <span class="item-label">ตรวจสอบผล</span>
+            <div class="lab-grid">
+              <label class="checkbox-label"><input type="checkbox" formControlName="labCBC" /> CBC</label>
+              <label class="checkbox-label"><input type="checkbox" formControlName="labUA" /> U/A</label>
+              <label class="checkbox-label"><input type="checkbox" formControlName="labFBS" /> FBS</label>
+              <label class="checkbox-label"><input type="checkbox" formControlName="labBUN" /> BUN</label>
+              <label class="checkbox-label"><input type="checkbox" formControlName="labCr" /> Cr</label>
+              <label class="checkbox-label"><input type="checkbox" formControlName="labHIV" /> HIV</label>
+              <label class="checkbox-label"><input type="checkbox" formControlName="labElyte" /> E'lyte</label>
+              <label class="checkbox-label"><input type="checkbox" formControlName="labLFT" /> LFT</label>
+              <label class="checkbox-label"><input type="checkbox" formControlName="labHbsAg" /> HbsAg</label>
+              <label class="checkbox-label"><input type="checkbox" formControlName="labCXR" /> CXR</label>
+              <label class="checkbox-label"><input type="checkbox" formControlName="labEKG" /> EKG</label>
+              <label class="checkbox-label"><input type="checkbox" formControlName="labCT" /> CT</label>
+              <label class="checkbox-label"><input type="checkbox" formControlName="labMRI" /> MRI</label>
+              <div class="lab-other">
+                <label>อื่นๆ <input type="text" formControlName="labOther" class="inline-input" /></label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Film -->
+          <div class="checkbox-row">
+            <label class="checkbox-label"><input type="checkbox" formControlName="printFilm" /> Print เตรียม Film</label>
+          </div>
+          <div class="text-row">
+            <label class="item-label" for="filmOtherHospital">Film รพ.อื่น ระบุ</label>
+            <input id="filmOtherHospital" type="text" formControlName="filmOtherHospital" class="inline-input" />
+          </div>
+
+          <!-- NPO -->
+          <div class="text-row">
+            <label class="item-label" for="npoTime">NPO เวลา</label>
+            <input id="npoTime" type="text" formControlName="npoTime" class="inline-input" />
+          </div>
+
+          <!-- Vaginal douche -->
+          <div class="shift-row" formGroupName="vaginalDouche">
+            <span class="item-label">Vaginal douche</span>
+            @for (s of shiftGroups; track s.key) {
+              <label class="shift-check" [attr.aria-label]="'Vaginal douche ' + s.label">
+                <input type="checkbox" [formControlName]="s.key" />
+              </label>
+            }
+          </div>
+
+          <!-- Retained Foley -->
+          <div class="shift-row" formGroupName="foleyInserted">
+            <span class="item-label">Retained Foley cath</span>
+            @for (s of shiftGroups; track s.key) {
+              <label class="shift-check" [attr.aria-label]="'Foley cath ' + s.label">
+                <input type="checkbox" [formControlName]="s.key" />
+              </label>
+            }
+          </div>
+
+          <!-- NG Tube -->
+          <div class="shift-row" formGroupName="ngTubeInserted">
+            <span class="item-label">ใส่ NG Tube</span>
+            @for (s of shiftGroups; track s.key) {
+              <label class="shift-check" [attr.aria-label]="'NG Tube ' + s.label">
+                <input type="checkbox" [formControlName]="s.key" />
+              </label>
+            }
+          </div>
+
+          <!-- สวนอุจจาระ -->
+          <div class="shift-row" formGroupName="enema">
+            <span class="item-label">สวนอุจจาระ</span>
+            @for (s of shiftGroups; track s.key) {
+              <label class="shift-check" [attr.aria-label]="'สวนอุจจาระ ' + s.label">
+                <input type="checkbox" [formControlName]="s.key" />
+              </label>
+            }
+          </div>
+
+          <!-- อื่นๆ -->
+          <div class="text-row">
+            <label class="item-label" for="others">อื่นๆ</label>
+            <input id="others" type="text" formControlName="others" class="inline-input" />
+          </div>
+
+          <!-- ถอดฟันปลอม -->
+          <div class="radio-row">
+            <span class="item-label">ถอดฟันปลอม/ของมีค่า</span>
+            <label class="radio-label"><input type="radio" formControlName="removeDentures" value="yes" /> มี</label>
+            <label class="radio-label"><input type="radio" formControlName="removeDentures" value="no" /> ไม่มี</label>
+          </div>
+
+          <!-- ป้ายข้อมือ -->
+          <div class="checkbox-row">
+            <label class="checkbox-label"><input type="checkbox" formControlName="wristBand" /> ผู้ป่วยมีป้ายข้อมือ</label>
+          </div>
+
+          <!-- ปัสสาวะก่อน -->
+          <div class="radio-row">
+            <span class="item-label">ปัสสาวะก่อนไปห้องผ่าตัด</span>
+            <label class="radio-label"><input type="radio" formControlName="voidBeforeOR" value="yes" /> มี</label>
+            <label class="radio-label"><input type="radio" formControlName="voidBeforeOR" value="no" /> ไม่มี</label>
+          </div>
+
+          <!-- ยา/อุปกรณ์ที่ต้องเตรียม -->
+          <div class="text-row">
+            <label class="item-label" for="equipmentToOR">ยา/อุปกรณ์ที่ต้องเตรียมไปห้องผ่าตัด</label>
+            <input id="equipmentToOR" type="text" formControlName="equipmentToOR" class="inline-input" />
+          </div>
+
+          <!-- ผู้ตรวจสอบ -->
+          <div class="text-row">
+            <label class="item-label" for="checker">ผู้ตรวจสอบ</label>
+            <input id="checker" type="text" formControlName="checker" class="inline-input" />
+          </div>
+
+          <!-- ยาที่ให้ -->
+          <div class="med-section">
+            <div class="med-header">
+              <span class="med-col-name">ยาที่ให้</span>
+              <span class="med-col">วันที่</span>
+              <span class="med-col">เวลา</span>
+              <span class="med-col">ผู้ให้</span>
+            </div>
+            @for (i of [1, 2, 3, 4, 5]; track i) {
+              <div class="med-row" [formGroupName]="'med' + i">
+                <input type="text" formControlName="name" class="med-col-name" [attr.aria-label]="'ยาที่ให้ ' + i" />
+                <input type="text" formControlName="date" class="med-col" [attr.aria-label]="'วันที่ ' + i" />
+                <input type="text" formControlName="time" class="med-col" [attr.aria-label]="'เวลา ' + i" />
+                <input type="text" formControlName="nurse" class="med-col" [attr.aria-label]="'ผู้ให้ ' + i" />
+              </div>
+            }
+          </div>
+        </section>
+
+        <!-- ===== คอลัมน์ 2: พยาบาลห้องผ่าตัด ===== -->
+        <section class="col-or-nurse" aria-labelledby="or-heading">
+          <h3 id="or-heading">พยาบาลห้องผ่าตัด</h3>
+
+          <label class="checkbox-label block"><input type="checkbox" formControlName="orIntro" /> แนะนำตนเองและสิ่งแวดล้อม</label>
+          <label class="checkbox-label block"><input type="checkbox" formControlName="orORInstruction" /> การปฏิบัติตัวระหว่างอยู่ในห้องผ่าตัด</label>
+          <label class="checkbox-label block"><input type="checkbox" formControlName="orExplainSurgery" /> อธิบายการผ่าตัด ครั้งๆ</label>
+          <label class="checkbox-label block"><input type="checkbox" formControlName="orAnswerQuestions" /> ตอบข้อซักถาม</label>
+          <label class="checkbox-label block"><input type="checkbox" formControlName="orCheckConsent" /> ตรวจสอบการยินยอมก่อนผ่าตัด</label>
+          <label class="checkbox-label block"><input type="checkbox" formControlName="orCheckCleanliness" /> ตรวจสอบความสะอาดทั่วไปและของมีค่าท่าที่ใช้ผ่าตัด</label>
+
+          <div class="sub-section">
+            <span class="sub-label">ท่าผ่าตัด</span>
+            <label class="checkbox-label block"><input type="checkbox" formControlName="orFractureTable" /> ใช้ Fracture table</label>
+            <label class="checkbox-label block"><input type="checkbox" formControlName="orPositionSupine" /> Supine</label>
+            <label class="checkbox-label block"><input type="checkbox" formControlName="orPositionLateralLt" /> Lateral Lt.</label>
+            <label class="checkbox-label block"><input type="checkbox" formControlName="orPositionLateralRt" /> Lateral Rt.</label>
+            <label class="checkbox-label block"><input type="checkbox" formControlName="orPositionProne" /> Prone</label>
+            <label class="checkbox-label block"><input type="checkbox" formControlName="orPositionLithotomy" /> Lithotomy</label>
+            <div class="text-row">
+              <label for="orPositionOther">อื่นๆ</label>
+              <input id="orPositionOther" type="text" formControlName="orPositionOther" class="inline-input" />
+            </div>
+          </div>
+
+          <div class="sub-section">
+            <span class="sub-label">การเตรียมอุปกรณ์พิเศษ</span>
+            <div class="text-row">
+              <label for="orSpecialEquipment">ระบุ</label>
+              <input id="orSpecialEquipment" type="text" formControlName="orSpecialEquipment" class="inline-input" />
+            </div>
+          </div>
+
+          <div class="sub-section">
+            <span class="sub-label">เอกสาร/สิ่งที่นำมา</span>
+            <label class="checkbox-label block"><input type="checkbox" formControlName="orConfirmPatient" /> ยืนยันผู้ป่วย</label>
+            <label class="checkbox-label block"><input type="checkbox" formControlName="orWristBand" /> ป้ายข้อมือ</label>
+            <label class="checkbox-label block"><input type="checkbox" formControlName="orMedicalRecord" /> แฟ้มประวัติ</label>
+            <label class="checkbox-label block"><input type="checkbox" formControlName="orXray" /> Film X-ray</label>
+            <label class="checkbox-label block"><input type="checkbox" formControlName="orCT" /> CT</label>
+            <label class="checkbox-label block"><input type="checkbox" formControlName="orMRI" /> MRI</label>
+            <div class="text-row">
+              <label for="orOtherItems">เวชภัณฑ์อื่นๆ</label>
+              <input id="orOtherItems" type="text" formControlName="orOtherItems" class="inline-input" />
+            </div>
+          </div>
+
+          <div class="text-row signer-row">
+            <label for="orReceiver">ผู้รับ/ตรวจสอบ</label>
+            <input id="orReceiver" type="text" formControlName="orReceiver" class="inline-input" />
+          </div>
+        </section>
+
+        <!-- ===== คอลัมน์ 3: วิสัญญีพยาบาล ===== -->
+        <section class="col-anesthesia" aria-labelledby="ane-heading">
+          <h3 id="ane-heading">วิสัญญีพยาบาล</h3>
+
+          <label class="checkbox-label block"><input type="checkbox" formControlName="aneExplainMethod" /> อธิบายวิธียาระงับความรู้สึก</label>
+          <label class="checkbox-label block"><input type="checkbox" formControlName="aneExplainCare" /> อธิบาย/ให้คำแนะนำ การดูแลก่อน/ระหว่าง/หลังรับยาระงับความรู้สึก</label>
+          <label class="checkbox-label block"><input type="checkbox" formControlName="aneHistoryAllergy" /> เคยได้รับการระงับความรู้สึก</label>
+
+          <div class="text-row">
+            <label for="aneAllergyNote">เคยแพ้</label>
+            <input id="aneAllergyNote" type="text" formControlName="aneAllergyNote" class="inline-input" />
+          </div>
+          <div class="text-row">
+            <label for="aneMedNote">ยาที่ใช้</label>
+            <input id="aneMedNote" type="text" formControlName="aneMedNote" class="inline-input" />
+          </div>
+
+          <div class="sub-section">
+            <span class="sub-label">ประวัติการเจ็บป่วย</span>
+            <label class="checkbox-label inline"><input type="checkbox" formControlName="aneHistoryCardiac" /> โรคหัวใจ</label>
+            <label class="checkbox-label inline"><input type="checkbox" formControlName="aneHistoryAsthma" /> หอบหืด</label>
+            <label class="checkbox-label inline"><input type="checkbox" formControlName="aneHistoryAllergicDisease" /> ภูมิแพ้</label>
+            <label class="checkbox-label inline"><input type="checkbox" formControlName="aneHistoryKidney" /> ไต</label>
+            <label class="checkbox-label inline"><input type="checkbox" formControlName="aneHistoryHT" /> HT</label>
+            <label class="checkbox-label inline"><input type="checkbox" formControlName="aneHistoryDM" /> DM</label>
+            <label class="checkbox-label inline"><input type="checkbox" formControlName="aneHistoryTB" /> TB</label>
+            <label class="checkbox-label inline"><input type="checkbox" formControlName="aneHistoryLiver" /> โรคตับ</label>
+            <div class="text-row">
+              <label for="aneHistoryOther">อื่นๆ</label>
+              <input id="aneHistoryOther" type="text" formControlName="aneHistoryOther" class="inline-input" />
+            </div>
+            <label class="checkbox-label inline"><input type="checkbox" formControlName="aneDrink" /> ดื่มสุรา</label>
+            <label class="checkbox-label inline"><input type="checkbox" formControlName="aneSmoke" /> บุหรี่</label>
+            <div class="text-row">
+              <label for="aneOtherHabit">อื่นๆ</label>
+              <input id="aneOtherHabit" type="text" formControlName="aneOtherHabit" class="inline-input" />
+            </div>
+          </div>
+
+          <!-- ASA Class -->
+          <div class="asa-row">
+            <span class="sub-label">ASA Physical status class</span>
+            <div class="asa-options">
+              @for (cls of asaClasses; track cls) {
+                <label class="radio-label asa">
+                  <input type="radio" formControlName="aneAsaClass" [value]="cls" />
+                  {{ cls }}
+                </label>
+              }
+            </div>
+          </div>
+
+          <div class="text-row">
+            <label for="aneAnesthesiaConcern">ภาวะเลี้ยงต่อการระงับความรู้สึก</label>
+            <input id="aneAnesthesiaConcern" type="text" formControlName="aneAnesthesiaConcern" class="inline-input" />
+          </div>
+
+          <!-- Mallampati Class -->
+          <div class="asa-row">
+            <span class="sub-label">Mallampati class</span>
+            <div class="asa-options">
+              @for (cls of mallampatiClasses; track cls) {
+                <label class="radio-label asa">
+                  <input type="radio" formControlName="aneMallampatiClass" [value]="cls" />
+                  {{ cls }}
+                </label>
+              }
+            </div>
+          </div>
+
+          <label class="checkbox-label block"><input type="checkbox" formControlName="aneDentures" /> มีฟันปลอม / ฟันโยก</label>
+
+          <div class="sub-section">
+            <span class="sub-label">Plan of anesthesia</span>
+            <label class="checkbox-label inline"><input type="checkbox" formControlName="anePlanGA" /> GA</label>
+            <label class="checkbox-label inline"><input type="checkbox" formControlName="anePlanSB" /> SB</label>
+            <label class="checkbox-label inline"><input type="checkbox" formControlName="anePlanIV" /> iv</label>
+            <div class="text-row">
+              <label for="anePlanOther">อื่นๆ</label>
+              <input id="anePlanOther" type="text" formControlName="anePlanOther" class="inline-input" />
+            </div>
+          </div>
+
+          <div class="lab-section">
+            <span class="item-label">ตรวจสอบผล</span>
+            <div class="lab-grid">
+              <label class="checkbox-label"><input type="checkbox" formControlName="aneLabCBC" /> CBC</label>
+              <label class="checkbox-label"><input type="checkbox" formControlName="aneLabUA" /> U/A</label>
+              <label class="checkbox-label"><input type="checkbox" formControlName="aneLabFBS" /> FBS</label>
+              <label class="checkbox-label"><input type="checkbox" formControlName="aneLabBUN" /> BUN</label>
+              <label class="checkbox-label"><input type="checkbox" formControlName="aneLabCr" /> Cr</label>
+              <label class="checkbox-label"><input type="checkbox" formControlName="aneLabElyte" /> E'lyte</label>
+              <label class="checkbox-label"><input type="checkbox" formControlName="aneLabLFT" /> LFT</label>
+              <label class="checkbox-label"><input type="checkbox" formControlName="aneLabHbsAg" /> HbsAg</label>
+              <label class="checkbox-label"><input type="checkbox" formControlName="aneLabCXR" /> CXR</label>
+              <label class="checkbox-label"><input type="checkbox" formControlName="aneLabEKG" /> EKG</label>
+              <div class="lab-other">
+                <label>อื่นๆ <input type="text" formControlName="aneLabOther" class="inline-input" /></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-row signer-row">
+            <label for="aneVisitor">ผู้เยี่ยม</label>
+            <input id="aneVisitor" type="text" formControlName="aneVisitor" class="inline-input" />
+          </div>
+        </section>
+      </div>
+
+      <!-- ====== ปุ่ม ====== -->
+      <div class="form-actions">
+        <button type="submit" class="btn-save">บันทึก</button>
+        <button type="button" class="btn-print" (click)="printForm()">🖨 พิมพ์ PDF</button>
+      </div>
+
+    </form>
+  }
+</div>

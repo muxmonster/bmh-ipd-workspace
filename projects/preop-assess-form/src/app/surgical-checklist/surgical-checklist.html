@@ -1,0 +1,436 @@
+<div class="checklist-page">
+
+  @if (patient()) {
+    <app-patient-header [patient]="patient()!" />
+  } @else {
+    <div class="no-patient" role="alert">
+      <p>ไม่พบข้อมูลผู้ป่วย — กรุณาระบุ <code>?an=690001111</code></p>
+    </div>
+  }
+
+  @if (patient()) {
+    <!-- Step Navigation -->
+    <nav class="step-nav" aria-label="ขั้นตอน">
+      <a [routerLink]="['/']" [queryParams]="{ an: patient()!.an }" class="step-btn">
+        ← Step 1: แบบประเมินก่อนผ่าตัด
+      </a>
+      <span class="step-current">Step 2: Surgical Checklist</span>
+    </nav>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-wrapper" novalidate>
+      <div class="form-title">
+        <h1>BANMI SURGICAL CHECKLIST</h1>
+        <h2>โรงพยาบาลบ้านหมี่ ลพบุรี</h2>
+      </div>
+
+      <div class="three-col-grid">
+
+        <!-- ========== SIGN IN ========== -->
+        <section class="col-signin" aria-labelledby="signin-heading">
+          <h3 id="signin-heading" class="section-title signin">
+            SIGN IN
+            <span class="section-subtitle">(ก่อนให้ยาระงับความรู้สึก)</span>
+          </h3>
+          <p class="by-line">โดยพยาบาลห้องผ่าตัดและวิสัญญีพยาบาล</p>
+
+          <!-- 1 -->
+          <div class="checklist-item">
+            <p class="item-text">
+              1. ผู้ป่วยได้รับการยืนยันชื่อ-สกุล, หัตถการ, ตำแหน่งผ่าตัด, ใบยินยอมผ่าตัด
+            </p>
+            <div class="radio-group">
+              <label class="radio-label">
+                <input type="radio" formControlName="siIdentityConfirmed" value="done" />
+                ได้ทำ
+              </label>
+              <label class="radio-label">
+                <input type="radio" formControlName="siIdentityConfirmed" value="notDone" />
+                ไม่ได้ทำ
+              </label>
+            </div>
+          </div>
+
+          <!-- 2 -->
+          <div class="checklist-item">
+            <p class="item-text">2. ตำแหน่งผ่าตัดได้รับการทำสัญลักษณ์ หรือไม่?</p>
+            <div class="radio-group">
+              <label class="radio-label">
+                <input type="radio" formControlName="siSiteMarked" value="done" />
+                ได้ทำ
+              </label>
+              <label class="radio-label">
+                <input type="radio" formControlName="siSiteMarked" value="notDone" />
+                ไม่ได้ทำ
+              </label>
+              <label class="radio-label">
+                <input type="radio" formControlName="siSiteMarked" value="na" />
+                ไม่สามารถทำได้
+              </label>
+            </div>
+          </div>
+
+          <!-- 3 -->
+          <div class="checklist-item">
+            <p class="item-text">
+              3. Anaesthetic machine ได้รับการตรวจสอบอย่างสมบูรณ์และยาระงับความรู้สึกได้รับการเตรียมพร้อม
+            </p>
+            <div class="radio-group">
+              <label class="radio-label">
+                <input type="radio" formControlName="siAnaMachineReady" value="yes" />
+                ใช่
+              </label>
+              <label class="radio-label">
+                <input type="radio" formControlName="siAnaMachineReady" value="no" />
+                ไม่ใช่
+              </label>
+            </div>
+          </div>
+
+          <!-- 4 -->
+          <div class="checklist-item">
+            <p class="item-text">4. เครื่อง Pulse oximeter ทำงานปกติ</p>
+            <div class="radio-group">
+              <label class="radio-label">
+                <input type="radio" formControlName="siPulseOxWorking" value="yes" />
+                ใช่
+              </label>
+              <label class="radio-label">
+                <input type="radio" formControlName="siPulseOxWorking" value="no" />
+                ไม่ใช่
+              </label>
+            </div>
+          </div>
+
+          <!-- 5 -->
+          <div class="checklist-item">
+            <p class="item-text">5. ผู้ป่วยมีภาวะต่อไปนี้หรือไม่?</p>
+
+            <div class="sub-item">
+              <p class="sub-label">5.1 แพ้ยาแพ้อาหาร</p>
+              <div class="radio-group">
+                <label class="radio-label">
+                  <input type="radio" formControlName="siAllergyNone" [value]="true" />
+                  ไม่มี
+                </label>
+                <label class="radio-label">
+                  <input type="radio" formControlName="siAllergyNone" [value]="false" />
+                  มี
+                </label>
+              </div>
+              @if (!form.get('siAllergyNone')!.value) {
+                <input type="text" formControlName="siAllergyNote" class="note-input" placeholder="ระบุ..." aria-label="รายการแพ้" />
+              }
+            </div>
+
+            <div class="sub-item">
+              <p class="sub-label">
+                5.2 หายใจลำบากหรือมีความเสี่ยงในการสูดสำลักอาหารลงปอด
+              </p>
+              <div class="radio-group">
+                <label class="radio-label">
+                  <input type="radio" formControlName="siAspirationRiskNone" [value]="true" />
+                  ไม่มี
+                </label>
+                <label class="radio-label">
+                  <input type="radio" formControlName="siAspirationRiskNone" [value]="false" />
+                  มี
+                </label>
+              </div>
+              @if (!form.get('siAspirationRiskNone')!.value) {
+                <p class="risk-note">และมีอุปกรณ์ช่วยเหลือพร้อม</p>
+                <input type="text" formControlName="siAspirationRiskNote" class="note-input" placeholder="ระบุ..." aria-label="รายละเอียดความเสี่ยงสูดสำลัก" />
+              }
+            </div>
+
+            <div class="sub-item">
+              <p class="sub-label">
+                5.3 ความเสี่ยงในการเสียเลือด &gt;500 ml (7ml/kg ในเด็ก)
+              </p>
+              <div class="radio-group">
+                <label class="radio-label">
+                  <input type="radio" formControlName="siBloodLossRiskNone" [value]="true" />
+                  ไม่มี
+                </label>
+                <label class="radio-label">
+                  <input type="radio" formControlName="siBloodLossRiskNone" [value]="false" />
+                  มี
+                </label>
+              </div>
+              @if (!form.get('siBloodLossRiskNone')!.value) {
+                <p class="risk-note">และมีสายน้ำเกลือ 2 เส้นรวมถึงแผนการให้สารน้ำระหว่างผ่าตัด</p>
+                <input type="text" formControlName="siBloodLossRiskNote" class="note-input" placeholder="ระบุ..." aria-label="รายละเอียดความเสี่ยงเสียเลือด" />
+              }
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== TIME OUT ========== -->
+        <section class="col-timeout" aria-labelledby="timeout-heading">
+          <h3 id="timeout-heading" class="section-title timeout">
+            TIME OUT
+            <span class="section-subtitle">(ก่อนลงมีดผ่าตัด หรือก่อนเริ่มทำหัตถการ)</span>
+          </h3>
+          <p class="by-line">โดยพยาบาลห้องผ่าตัด, วิสัญญีพยาบาล, วิสัญญีแพทย์, ศัลยแพทย์</p>
+
+          <!-- 1 -->
+          <div class="checklist-item">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="toTeamIntroduced" />
+              1. ยืนยันสมาชิกทั้งหมดในทีมได้แนะนำชื่อและบทบาทของตน
+            </label>
+          </div>
+
+          <!-- 2 -->
+          <div class="checklist-item">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="toPatientConfirmed" />
+              2. ยืนยันชื่อ-สกุลผู้ป่วย, หัตถการ, และตำแหน่งที่จะลงมีดผ่าตัด
+            </label>
+          </div>
+
+          <!-- 3 -->
+          <div class="checklist-item">
+            <p class="item-text">3. การเตรียมความพร้อมสำหรับภาวะวิกฤติ</p>
+
+            <!-- ศัลยแพทย์ -->
+            <div class="sub-role">
+              <span class="role-label">ศัลยแพทย์</span>
+              <div class="sub-item">
+                <p class="sub-label">ขั้นตอนที่สำคัญเป็นพิเศษในการผ่าตัดนี้</p>
+                <div class="radio-group">
+                  <label class="radio-label">
+                    <input type="radio" formControlName="toCriticalSteps" value="yes" />
+                    O มี
+                  </label>
+                  <label class="radio-label">
+                    <input type="radio" formControlName="toCriticalSteps" value="no" />
+                    O ไม่มี
+                  </label>
+                </div>
+              </div>
+              <div class="sub-item">
+                <p class="sub-label">ต้องการเครื่องมือผ่าตัด/การตรวจค้นทางห้องปฏิบัติการเป็นพิเศษ</p>
+                <div class="radio-group">
+                  <label class="radio-label">
+                    <input type="radio" formControlName="toSpecialEquipment" value="yes" />
+                    O มี
+                  </label>
+                  <label class="radio-label">
+                    <input type="radio" formControlName="toSpecialEquipment" value="no" />
+                    O ไม่มี
+                  </label>
+                </div>
+              </div>
+              <div class="sub-item">
+                <p class="sub-label">ใช้เวลาตัดนานแค่ไหน</p>
+                <div class="checkbox-row">
+                  <label class="checkbox-label">
+                    <input type="checkbox" formControlName="toDurationLt1h" />
+                    &lt;1 ชม
+                  </label>
+                  <label class="checkbox-label">
+                    <input type="checkbox" formControlName="toDuration1to2h" />
+                    1-2 ชม
+                  </label>
+                  <label class="checkbox-label">
+                    <input type="checkbox" formControlName="toDurationGt2h" />
+                    &gt;2 ชม ขึ้นไป
+                  </label>
+                </div>
+              </div>
+              <div class="sub-item inline-field">
+                <label for="toExpectedBloodLoss">คาดว่าจะเสียเลือดเท่าไหร่</label>
+                <input id="toExpectedBloodLoss" type="text" formControlName="toExpectedBloodLoss" class="note-input" />
+              </div>
+            </div>
+
+            <!-- วิสัญญีแพทย์ -->
+            <div class="sub-role">
+              <span class="role-label">วิสัญญีแพทย์</span>
+              <div class="sub-item inline-field">
+                <label for="toAneConcerns">อะไรที่ต้องระวังเป็นพิเศษสำหรับผู้ป่วยรายนี้</label>
+                <input id="toAneConcerns" type="text" formControlName="toAneConcerns" class="note-input" />
+              </div>
+              <div class="sub-item inline-field">
+                <label for="toAsaClass">ASA class</label>
+                <input id="toAsaClass" type="text" formControlName="toAsaClass" class="note-input short" />
+              </div>
+              <div class="sub-item">
+                <p class="sub-label">มีความจำเป็นต้องใช้เครื่องมือเฝ้าระวังพิเศษหรือเลือด หรือไม่</p>
+                <div class="radio-group">
+                  <label class="radio-label">
+                    <input type="radio" formControlName="toSpecialMonitoring" value="no" />
+                    O ไม่มี
+                  </label>
+                  <label class="radio-label">
+                    <input type="radio" formControlName="toSpecialMonitoring" value="yes" />
+                    O มี
+                  </label>
+                </div>
+                @if (form.get('toSpecialMonitoring')!.value === 'yes') {
+                  <input type="text" formControlName="toSpecialMonitoringNote" class="note-input" placeholder="ระบุ..." aria-label="รายละเอียดเครื่องมือพิเศษ" />
+                }
+              </div>
+            </div>
+
+            <!-- พยาบาล -->
+            <div class="sub-role">
+              <span class="role-label">พยาบาล</span>
+              <label class="checkbox-label block">
+                <input type="checkbox" formControlName="toSterileIndicatorConfirmed" />
+                O ได้รับการยืนยันเกี่ยวกับภาวะปราศจากเชื้อ (Indicator)
+              </label>
+              <div class="sub-item">
+                <p class="sub-label">มีเครื่องมือหรือปัญหาที่ต้องระวังหรือไม่</p>
+                <div class="radio-group">
+                  <label class="radio-label">
+                    <input type="radio" formControlName="toNurseEquipmentConcernNone" [value]="true" />
+                    O ไม่มี
+                  </label>
+                  <label class="radio-label">
+                    <input type="radio" formControlName="toNurseEquipmentConcernNone" [value]="false" />
+                    O มี
+                  </label>
+                </div>
+                @if (!form.get('toNurseEquipmentConcernNone')!.value) {
+                  <input type="text" formControlName="toNurseEquipmentConcernNote" class="note-input" placeholder="ระบุ..." aria-label="รายละเอียดปัญหาเครื่องมือ" />
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- 4 SSI prevention -->
+          <div class="checklist-item">
+            <p class="item-text">
+              4. SSI prevention ได้ให้ Antibiotic Prophylaxis ภายใน 60 นาที ก่อนลงมีดผ่าตัด
+            </p>
+            <div class="radio-group">
+              <label class="radio-label">
+                <input type="radio" formControlName="toAntibioticGiven" value="given" />
+                ให้
+              </label>
+              <label class="radio-label">
+                <input type="radio" formControlName="toAntibioticGiven" value="notNeeded" />
+                ไม่ต้องให้
+              </label>
+            </div>
+            <div class="checkbox-row indent">
+              <label class="checkbox-label">
+                <input type="checkbox" formControlName="toCoverPatient" />
+                + ห่มผ้าผู้ป่วย
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" formControlName="toShaveHair" />
+                + โกนขน
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" formControlName="toGlucoseControl" />
+                + ควบคุมระดับน้ำตาลในเลือด
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== SIGN OUT (right column) ========== -->
+        <section class="col-signout" aria-labelledby="signout-section-heading">
+
+          <!-- 5 & 6 ต่อจาก TIME OUT -->
+          <div class="timeout-continued">
+            <div class="checklist-item">
+              <p class="item-text">
+                5. ได้ให้ VTE Prophylaxis หรือไม่
+                <span class="item-note">(Venous thrombosis embolism)</span>
+              </p>
+              <div class="radio-group">
+                <label class="radio-label">
+                  <input type="radio" formControlName="toVTEGiven" value="given" />
+                  ให้
+                </label>
+                <label class="radio-label">
+                  <input type="radio" formControlName="toVTEGiven" value="notGiven" />
+                  ไม่ให้
+                </label>
+              </div>
+            </div>
+
+            <div class="checklist-item">
+              <p class="item-text">6. ได้แสดงผลภาพวินิจฉัยทางรังสี?</p>
+              <div class="radio-group">
+                <label class="radio-label">
+                  <input type="radio" formControlName="toRadiologyNone" [value]="true" />
+                  ไม่มี
+                </label>
+                <label class="radio-label">
+                  <input type="radio" formControlName="toRadiologyNone" [value]="false" />
+                  มี
+                </label>
+              </div>
+              @if (!form.get('toRadiologyNone')!.value) {
+                <input type="text" formControlName="toRadiologyNote" class="note-input" placeholder="ระบุ..." aria-label="รายละเอียดภาพวินิจฉัย" />
+              }
+            </div>
+          </div>
+
+          <!-- SIGN OUT -->
+          <h3 id="signout-section-heading" class="section-title signout">
+            SIGN OUT
+            <span class="section-subtitle">(เมื่อการผ่าตัดเสร็จสิ้นก่อนออกจากห้องผ่าตัด)</span>
+          </h3>
+          <p class="by-line">โดยพยาบาลห้องผ่าตัด, วิสัญญีพยาบาล, วิสัญญีแพทย์, ศัลยแพทย์</p>
+
+          <div class="checklist-item">
+            <div class="inline-field">
+              <label for="soProcedureName">O ชื่อหัตถการ</label>
+              <input id="soProcedureName" type="text" formControlName="soProcedureName" class="note-input" />
+            </div>
+            <label class="checkbox-label block">
+              <input type="checkbox" formControlName="soInstrumentCountComplete" />
+              O นับจำนวนเครื่องมือ, Swab, Sponge, Gauze, เข็บ ครบสมบูรณ์
+            </label>
+            <label class="checkbox-label block">
+              <input type="checkbox" formControlName="soSpecimenLabeled" />
+              O ติดสลาก Specimen อ่านออกเสียงสลากดังๆ พร้อมชื่อผู้ป่วย
+            </label>
+            <div class="inline-field">
+              <label for="soEquipmentIssueNote">O ปัญหาเครื่องมือที่ได้รับการจัดการแก้ไข</label>
+              <input id="soEquipmentIssueNote" type="text" formControlName="soEquipmentIssueNote" class="note-input" />
+            </div>
+          </div>
+
+          <div class="checklist-item">
+            <p class="item-text">ศัลยแพทย์, วิสัญญีแพทย์, พยาบาล</p>
+            <div class="inline-field">
+              <label for="soRecoveryNote">O อะไรคือข้อระวังและการดูแลผู้ป่วยในห้องพักฟื้น</label>
+              <input id="soRecoveryNote" type="text" formControlName="soRecoveryNote" class="note-input" />
+            </div>
+          </div>
+
+          <!-- ลงนาม -->
+          <div class="signature-section">
+            <div class="sig-row">
+              <label for="signSurgeon">ลงนาม</label>
+              <input id="signSurgeon" type="text" formControlName="signSurgeon" class="sig-input" aria-label="ลงนามแพทย์ผู้ทำผ่าตัด" />
+              <span class="sig-title">แพทย์ผู้ทำผ่าตัด</span>
+            </div>
+            <div class="sig-row">
+              <label for="signOrNurse">ลงนาม</label>
+              <input id="signOrNurse" type="text" formControlName="signOrNurse" class="sig-input" aria-label="ลงนามพยาบาลห้องผ่าตัด" />
+              <span class="sig-title">พยาบาลห้องผ่าตัด</span>
+            </div>
+            <div class="sig-row">
+              <label for="signAnesthesia">ลงนาม</label>
+              <input id="signAnesthesia" type="text" formControlName="signAnesthesia" class="sig-input" aria-label="ลงนามวิสัญญี" />
+              <span class="sig-title">วิสัญญี</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button type="submit" class="btn-save">บันทึก</button>
+        <button type="button" class="btn-print" (click)="printForm()">🖨 พิมพ์ PDF</button>
+      </div>
+    </form>
+  }
+</div>
