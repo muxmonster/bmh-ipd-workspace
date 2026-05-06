@@ -91,30 +91,60 @@
           </div>
 
           <!-- จองเลือด -->
-          <div class="text-row">
-            <label class="item-label" for="bloodReservation">จองเลือด ชนิด</label>
-            <input id="bloodReservation" type="text" formControlName="bloodType" class="inline-input" />
-            <span>จำนวน</span>
-            <input type="text" formControlName="bloodReservation" class="inline-input short" />
+          <div class="shift-row blood-reservation-row">
+            <div class="blood-reservation-main">
+              <label class="item-label" for="bloodReservation">จองเลือด ชนิด</label>
+              <input id="bloodReservation" type="text" formControlName="bloodType" class="inline-input" />
+              <span>จำนวน</span>
+              <input type="text" formControlName="bloodReservation" class="inline-input short" />
+            </div>
+            <ng-container formGroupName="bloodReservationShift">
+              @for (s of shiftGroups; track s.key) {
+                <label class="shift-check" [attr.aria-label]="'จองเลือด ' + s.label">
+                  <input type="checkbox" [formControlName]="s.key" />
+                </label>
+              }
+            </ng-container>
           </div>
 
           <!-- จอง ICU -->
-          <div class="radio-row">
-            <span class="item-label">จอง ICU</span>
-            <label class="radio-label"><input type="radio" formControlName="icuReserve" value="got" /> ได้</label>
-            <label class="radio-label"><input type="radio" formControlName="icuReserve" value="notGot" /> ไม่ได้</label>
-            <label class="radio-label"><input type="radio" formControlName="icuReserve" value="notNeeded" /> ไม่ต้องจอง</label>
+          <div class="shift-row icu-reserve-row">
+            <div class="icu-reserve-main">
+              <span class="item-label">จอง ICU</span>
+              <label class="radio-label"><input type="radio" formControlName="icuReserve" value="got" /> ได้</label>
+              <label class="radio-label"><input type="radio" formControlName="icuReserve" value="notGot" /> ไม่ได้</label>
+              <label class="radio-label"><input type="radio" formControlName="icuReserve" value="notNeeded" /> ไม่ต้องจอง</label>
+            </div>
+            <ng-container formGroupName="icuReserveShift">
+              @for (s of shiftGroups; track s.key) {
+                <label class="shift-check" [attr.aria-label]="'จอง ICU ' + s.label">
+                  <input type="checkbox" [formControlName]="s.key" />
+                </label>
+              }
+            </ng-container>
           </div>
 
           <!-- ยินยอม -->
-          <div class="checkbox-row">
-            <label class="checkbox-label"><input type="checkbox" formControlName="consentSigned" /> เซ็นยินยอมการทำผ่าตัด</label>
-            <label class="checkbox-label"><input type="checkbox" formControlName="witnessSigned" /> พยาน</label>
+          <div class="shift-row consent-row">
+            <div class="consent-main">
+              <label class="checkbox-label"><input type="checkbox" formControlName="consentSigned" /> เซ็นยินยอมการทำผ่าตัด</label>
+              <label class="checkbox-label"><input type="checkbox" formControlName="witnessSigned" /> พยาน</label>
+            </div>
+            <ng-container formGroupName="consentShift">
+              @for (s of shiftGroups; track s.key) {
+                <label class="shift-check" [attr.aria-label]="'เซ็นยินยอมการทำผ่าตัด ' + s.label">
+                  <input type="checkbox" [formControlName]="s.key" />
+                </label>
+              }
+            </ng-container>
           </div>
 
           <!-- ทำความสะอาดร่างกาย -->
           <div class="shift-row" formGroupName="bodyClean">
-            <span class="item-label">ทำความสะอาดร่างกายทั่วไป</span>
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="checked" />
+              <span class="item-label">ทำความสะอาดร่างกายทั่วไป</span>
+            </label>
             @for (s of shiftGroups; track s.key) {
               <label class="shift-check" [attr.aria-label]="'ทำความสะอาด ' + s.label">
                 <input type="checkbox" [formControlName]="s.key" />
@@ -124,7 +154,10 @@
 
           <!-- อาบน้ำ สระผม -->
           <div class="shift-row" formGroupName="bathShampoo">
-            <span class="item-label">อาบน้ำ สระผม ตรวจของมีค่าต่างๆ</span>
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="checked" />
+              <span class="item-label">อาบน้ำ สระผม ตรวจของมีค่าต่างๆ</span>
+            </label>
             @for (s of shiftGroups; track s.key) {
               <label class="shift-check" [attr.aria-label]="'อาบน้ำ สระผม ' + s.label">
                 <input type="checkbox" [formControlName]="s.key" />
@@ -133,48 +166,143 @@
           </div>
 
           <!-- ผิวหนัง -->
-          <div class="radio-row">
-            <span class="item-label">ผิวหนังบริเวณที่ผ่าตัด</span>
-            <label class="radio-label"><input type="radio" formControlName="skinCondition" value="normal" /> ปกติ</label>
-            <label class="radio-label"><input type="radio" formControlName="skinCondition" value="abnormal" /> ผิดปกติ</label>
+          <div class="shift-row skin-condition-row">
+            <div class="skin-condition-main">
+              <span class="item-label">ผิวหนังบริเวณที่ผ่าตัด</span>
+              <label class="radio-label"><input type="radio" formControlName="skinCondition" value="prepared" /> เตรียม</label>
+              <label class="radio-label"><input type="radio" formControlName="skinCondition" value="normal" /> ปกติ</label>
+              <label class="radio-label"><input type="radio" formControlName="skinCondition" value="abnormal" /> ผิดปกติ</label>
+            </div>
+            <ng-container formGroupName="skinConditionShift">
+              @for (s of shiftGroups; track s.key) {
+                <label class="shift-check" [attr.aria-label]="'ผิวหนังบริเวณที่ผ่าตัด ' + s.label">
+                  <input type="checkbox" [formControlName]="s.key" />
+                </label>
+              }
+            </ng-container>
           </div>
 
           <!-- Lab ผล -->
           <div class="lab-section">
             <span class="item-label">ตรวจสอบผล</span>
-            <div class="lab-grid">
+            <div class="shift-row lab-shift-row">
               <label class="checkbox-label"><input type="checkbox" formControlName="labCBC" /> CBC</label>
+              <ng-container formGroupName="labCBCShift">
+                @for (s of shiftGroups; track s.key) {
+                  <label class="shift-check" [attr.aria-label]="'CBC ' + s.label">
+                    <input type="checkbox" [formControlName]="s.key" />
+                  </label>
+                }
+              </ng-container>
+            </div>
+            <div class="lab-grid">
               <label class="checkbox-label"><input type="checkbox" formControlName="labUA" /> U/A</label>
               <label class="checkbox-label"><input type="checkbox" formControlName="labFBS" /> FBS</label>
               <label class="checkbox-label"><input type="checkbox" formControlName="labBUN" /> BUN</label>
               <label class="checkbox-label"><input type="checkbox" formControlName="labCr" /> Cr</label>
               <label class="checkbox-label"><input type="checkbox" formControlName="labHIV" /> HIV</label>
-              <label class="checkbox-label"><input type="checkbox" formControlName="labElyte" /> E'lyte</label>
-              <label class="checkbox-label"><input type="checkbox" formControlName="labLFT" /> LFT</label>
-              <label class="checkbox-label"><input type="checkbox" formControlName="labHbsAg" /> HbsAg</label>
-              <label class="checkbox-label"><input type="checkbox" formControlName="labCXR" /> CXR</label>
+            </div>
+            <div class="shift-row lab-shift-row">
+              <div class="lab-inline-main">
+                <label class="checkbox-label"><input type="checkbox" formControlName="labElyte" /> E'lyte</label>
+                <label class="checkbox-label"><input type="checkbox" formControlName="labLFT" /> LFT</label>
+                <label class="checkbox-label"><input type="checkbox" formControlName="labHbsAg" /> HbsAg</label>
+                <label class="checkbox-label"><input type="checkbox" formControlName="labCXR" /> CXR</label>
+              </div>
+              <ng-container formGroupName="labElyteShift">
+                @for (s of shiftGroups; track s.key) {
+                  <label class="shift-check" [attr.aria-label]="'E\'lyte ' + s.label">
+                    <input type="checkbox" [formControlName]="s.key" />
+                  </label>
+                }
+              </ng-container>
+            </div>
+            <div class="shift-row lab-shift-row">
               <label class="checkbox-label"><input type="checkbox" formControlName="labEKG" /> EKG</label>
+              <ng-container formGroupName="labEKGShift">
+                @for (s of shiftGroups; track s.key) {
+                  <label class="shift-check" [attr.aria-label]="'EKG ' + s.label">
+                    <input type="checkbox" [formControlName]="s.key" />
+                  </label>
+                }
+              </ng-container>
+            </div>
+            <div class="lab-grid">
               <label class="checkbox-label"><input type="checkbox" formControlName="labCT" /> CT</label>
               <label class="checkbox-label"><input type="checkbox" formControlName="labMRI" /> MRI</label>
+            </div>
+            <div class="shift-row lab-other-row">
               <div class="lab-other">
-                <label>อื่นๆ <input type="text" formControlName="labOther" class="inline-input" /></label>
+                <label class="checkbox-label" for="labOtherChecked">
+                  <input id="labOtherChecked" type="checkbox" formControlName="labOtherChecked" />
+                </label>
+                <label for="labOther">อื่นๆ</label>
+                <input id="labOther" type="text" formControlName="labOther" class="inline-input" />
               </div>
+              <ng-container formGroupName="labOtherShift">
+                @for (s of shiftGroups; track s.key) {
+                  <label class="shift-check" [attr.aria-label]="'อื่นๆ ' + s.label">
+                    <input type="checkbox" [formControlName]="s.key" />
+                  </label>
+                }
+              </ng-container>
             </div>
           </div>
 
           <!-- Film -->
-          <div class="checkbox-row">
+          <div class="shift-row print-film-row">
             <label class="checkbox-label"><input type="checkbox" formControlName="printFilm" /> Print เตรียม Film</label>
+            <ng-container formGroupName="printFilmShift">
+              @for (s of shiftGroups; track s.key) {
+                <label class="shift-check" [attr.aria-label]="'Print เตรียม Film ' + s.label">
+                  <input type="checkbox" [formControlName]="s.key" />
+                </label>
+              }
+            </ng-container>
           </div>
-          <div class="text-row">
-            <label class="item-label" for="filmOtherHospital">Film รพ.อื่น ระบุ</label>
-            <input id="filmOtherHospital" type="text" formControlName="filmOtherHospital" class="inline-input" />
+          <div class="shift-row film-other-row">
+            <div class="film-other-main">
+              <label class="checkbox-label" for="filmOtherHospitalChecked">
+                <input id="filmOtherHospitalChecked" type="checkbox" formControlName="filmOtherHospitalChecked" />
+              </label>
+              <label class="item-label" for="filmOtherHospital">Film รพ.อื่น ระบุ</label>
+              <input id="filmOtherHospital" type="text" formControlName="filmOtherHospital" class="inline-input" />
+            </div>
+            <ng-container formGroupName="filmOtherHospitalShift">
+              @for (s of shiftGroups; track s.key) {
+                <label class="shift-check" [attr.aria-label]="'Film รพ.อื่น ระบุ ' + s.label">
+                  <input type="checkbox" [formControlName]="s.key" />
+                </label>
+              }
+            </ng-container>
           </div>
 
           <!-- NPO -->
-          <div class="text-row">
-            <label class="item-label" for="npoTime">NPO เวลา</label>
-            <input id="npoTime" type="text" formControlName="npoTime" class="inline-input" />
+          <div class="shift-row npo-row">
+            <div class="npo-main">
+              <label class="checkbox-label" for="npoChecked">
+                <input id="npoChecked" type="checkbox" formControlName="npoChecked" />
+              </label>
+              <label class="item-label">NPO เวลา</label>
+              <select formControlName="npoHour" class="npo-select" aria-label="NPO ชั่วโมง">
+                @for (h of npoHours; track h) {
+                  <option [value]="h">{{ h }}</option>
+                }
+              </select>
+              <span class="npo-sep">:</span>
+              <select formControlName="npoMinute" class="npo-select" aria-label="NPO นาที">
+                @for (m of npoMinutes; track m) {
+                  <option [value]="m">{{ m }}</option>
+                }
+              </select>
+            </div>
+            <ng-container formGroupName="npoShift">
+              @for (s of shiftGroups; track s.key) {
+                <label class="shift-check" [attr.aria-label]="'NPO เวลา ' + s.label">
+                  <input type="checkbox" [formControlName]="s.key" />
+                </label>
+              }
+            </ng-container>
           </div>
 
           <!-- Vaginal douche -->
@@ -218,40 +346,105 @@
           </div>
 
           <!-- อื่นๆ -->
-          <div class="text-row">
-            <label class="item-label" for="others">อื่นๆ</label>
-            <input id="others" type="text" formControlName="others" class="inline-input" />
+          <div class="shift-row others-row">
+            <div class="others-main">
+              <label class="checkbox-label" for="othersChecked">
+                <input id="othersChecked" type="checkbox" formControlName="othersChecked" />
+              </label>
+              <label class="item-label" for="others"> อื่นๆ</label>
+              <input id="others" type="text" formControlName="others" class="inline-input" />
+            </div>
+            <ng-container formGroupName="othersShift">
+              @for (s of shiftGroups; track s.key) {
+                <label class="shift-check" [attr.aria-label]="'อื่นๆ ' + s.label">
+                  <input type="checkbox" [formControlName]="s.key" />
+                </label>
+              }
+            </ng-container>
           </div>
 
           <!-- ถอดฟันปลอม -->
-          <div class="radio-row">
-            <span class="item-label">ถอดฟันปลอม/ของมีค่า</span>
-            <label class="radio-label"><input type="radio" formControlName="removeDentures" value="yes" /> มี</label>
-            <label class="radio-label"><input type="radio" formControlName="removeDentures" value="no" /> ไม่มี</label>
+          <div class="shift-row remove-dentures-row">
+            <div class="remove-dentures-main">
+              <span class="item-label">ถอดฟันปลอม/ของมีค่า</span>
+              <label class="radio-label"><input type="radio" formControlName="removeDentures" value="yes" /> มี</label>
+              <label class="radio-label"><input type="radio" formControlName="removeDentures" value="no" /> ไม่มี</label>
+            </div>
+            <ng-container formGroupName="removeDenturesShift">
+              @for (s of shiftGroups; track s.key) {
+                <label class="shift-check" [attr.aria-label]="'ถอดฟันปลอม ' + s.label">
+                  <input type="checkbox" [formControlName]="s.key" />
+                </label>
+              }
+            </ng-container>
           </div>
 
           <!-- ป้ายข้อมือ -->
-          <div class="checkbox-row">
-            <label class="checkbox-label"><input type="checkbox" formControlName="wristBand" /> ผู้ป่วยมีป้ายข้อมือ</label>
+          <div class="shift-row" formGroupName="wristBandShift">
+            <span class="item-label">ผู้ป่วยมีป้ายข้อมือ</span>
+            @for (s of shiftGroups; track s.key) {
+              <label class="shift-check" [attr.aria-label]="'ป้ายข้อมือ ' + s.label">
+                <input type="checkbox" [formControlName]="s.key" />
+              </label>
+            }
           </div>
 
           <!-- ปัสสาวะก่อน -->
-          <div class="radio-row">
-            <span class="item-label">ปัสสาวะก่อนไปห้องผ่าตัด</span>
-            <label class="radio-label"><input type="radio" formControlName="voidBeforeOR" value="yes" /> มี</label>
-            <label class="radio-label"><input type="radio" formControlName="voidBeforeOR" value="no" /> ไม่มี</label>
+          <div class="shift-row void-before-or-row">
+            <div class="void-before-or-main">
+              <span class="item-label">ปัสสาวะก่อนไปห้องผ่าตัด</span>
+              <label class="radio-label"><input type="radio" formControlName="voidBeforeOR" value="yes" /> มี</label>
+              <label class="radio-label"><input type="radio" formControlName="voidBeforeOR" value="no" /> ไม่มี</label>
+            </div>
+            <ng-container formGroupName="voidBeforeORShift">
+              @for (s of shiftGroups; track s.key) {
+                <label class="shift-check" [attr.aria-label]="'ปัสสาวะก่อนไปห้องผ่าตัด ' + s.label">
+                  <input type="checkbox" [formControlName]="s.key" />
+                </label>
+              }
+            </ng-container>
           </div>
 
           <!-- ยา/อุปกรณ์ที่ต้องเตรียม -->
-          <div class="text-row">
-            <label class="item-label" for="equipmentToOR">ยา/อุปกรณ์ที่ต้องเตรียมไปห้องผ่าตัด</label>
-            <input id="equipmentToOR" type="text" formControlName="equipmentToOR" class="inline-input" />
+          <div class="shift-row equipment-row">
+            <div class="equipment-main">
+              <label class="item-label" for="equipmentToOR">ยา/อุปกรณ์ที่ต้องเตรียมไปห้องผ่าตัด</label>
+              <input id="equipmentToOR" type="text" formControlName="equipmentToOR" class="inline-input" />
+            </div>
+            <ng-container formGroupName="equipmentToORShift">
+              @for (s of shiftGroups; track s.key) {
+                <label class="shift-check" [attr.aria-label]="'ยา/อุปกรณ์ ' + s.label">
+                  <input type="checkbox" [formControlName]="s.key" />
+                </label>
+              }
+            </ng-container>
           </div>
 
+          <!-- แถวเพิ่มเติม -->
+          @for (i of [1, 2, 3, 4]; track i) {
+            <div class="shift-row" [formGroupName]="'extraRow' + i">
+              <input type="text" formControlName="note" class="inline-input extra-row-input" [attr.aria-label]="'รายการเพิ่มเติม ' + i" />
+              @for (s of shiftGroups; track s.key) {
+                <label class="shift-check" [attr.aria-label]="'รายการเพิ่มเติม ' + i + ' ' + s.label">
+                  <input type="checkbox" [formControlName]="s.key" />
+                </label>
+              }
+            </div>
+          }
+
           <!-- ผู้ตรวจสอบ -->
-          <div class="text-row">
-            <label class="item-label" for="checker">ผู้ตรวจสอบ</label>
-            <input id="checker" type="text" formControlName="checker" class="inline-input" />
+          <div class="shift-row">
+            <div class="equipment-main">
+              <label class="item-label" for="checker">ผู้ตรวจสอบ</label>
+              <input id="checker" type="text" formControlName="checker" class="inline-input" />
+            </div>
+            <ng-container formGroupName="checkerShift">
+              @for (s of shiftGroups; track s.key) {
+                <label class="shift-check" [attr.aria-label]="'ผู้ตรวจสอบ ' + s.label">
+                  <input type="checkbox" [formControlName]="s.key" />
+                </label>
+              }
+            </ng-container>
           </div>
 
           <!-- ยาที่ให้ -->
@@ -265,8 +458,20 @@
             @for (i of [1, 2, 3, 4, 5]; track i) {
               <div class="med-row" [formGroupName]="'med' + i">
                 <input type="text" formControlName="name" class="med-col-name" [attr.aria-label]="'ยาที่ให้ ' + i" />
-                <input type="text" formControlName="date" class="med-col" [attr.aria-label]="'วันที่ ' + i" />
-                <input type="text" formControlName="time" class="med-col" [attr.aria-label]="'เวลา ' + i" />
+                <input type="date" formControlName="date" class="med-col med-date" [attr.aria-label]="'วันที่ ' + i" />
+                <div class="med-time med-col">
+                  <select formControlName="timeHour" [attr.aria-label]="'ชั่วโมง ' + i" class="med-time-select">
+                    @for (h of npoHours; track h) {
+                      <option [value]="h">{{h}}</option>
+                    }
+                  </select>
+                  <span class="med-time-sep">:</span>
+                  <select formControlName="timeMinute" [attr.aria-label]="'นาที ' + i" class="med-time-select">
+                    @for (m of npoMinutes; track m) {
+                      <option [value]="m">{{m}}</option>
+                    }
+                  </select>
+                </div>
                 <input type="text" formControlName="nurse" class="med-col" [attr.aria-label]="'ผู้ให้ ' + i" />
               </div>
             }

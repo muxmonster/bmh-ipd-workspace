@@ -312,6 +312,85 @@
   }
 }
 
+.blood-reservation-row {
+  .blood-reservation-main {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+
+    span {
+      white-space: nowrap;
+      font-size: 0.8rem;
+    }
+  }
+}
+
+.icu-reserve-row {
+  .icu-reserve-main {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+  }
+}
+
+.consent-row {
+  .consent-main {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+}
+
+.skin-condition-row,
+.print-film-row {
+  .checkbox-label,
+  .item-label,
+  .radio-label {
+    font-size: 0.8rem;
+  }
+}
+
+.skin-condition-main,
+.film-other-main,
+.npo-main {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.equipment-main {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.extra-row-input {
+  width: 100%;
+}
+
+.npo-select {
+  border: none;
+  border-bottom: 1px solid #999;
+  background: transparent;
+  font-size: 0.82rem;
+  padding: 0.1rem 0.1rem;
+  outline: none;
+  width: 3rem;
+
+  &:focus { border-bottom-color: #1a56a0; }
+  &:disabled { color: #aaa; }
+}
+
+.npo-sep {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
 /* ====== Lab section ====== */
 .lab-section {
   margin: 0.3rem 0;
@@ -327,10 +406,33 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.15rem 0.5rem;
+    margin-bottom: 0.2rem;
+
+    .lab-break {
+      flex-basis: 100%;
+      width: 0;
+      height: 0;
+    }
 
     .lab-other {
       width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      flex-wrap: wrap;
     }
+  }
+
+  .lab-shift-row,
+  .lab-other-row {
+    margin-bottom: 0.2rem;
+  }
+
+  .lab-inline-main {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
   }
 }
 
@@ -360,8 +462,7 @@
   .med-row {
     margin-bottom: 3px;
 
-    input {
-      width: 100%;
+    input, select {
       border: none;
       border-bottom: 1px solid #ccc;
       font-size: 0.78rem;
@@ -371,6 +472,31 @@
 
       &:focus {
         border-bottom-color: #1a56a0;
+      }
+    }
+
+    input {
+      width: 100%;
+    }
+
+    .med-date {
+      width: 100%;
+      font-size: 0.72rem;
+    }
+
+    .med-time {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+
+      .med-time-select {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .med-time-sep {
+        font-size: 0.78rem;
+        line-height: 1;
       }
     }
   }
