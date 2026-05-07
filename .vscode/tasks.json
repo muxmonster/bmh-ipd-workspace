@@ -3,6 +3,51 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Backend: bmh-ipd-portal (dev)",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": {
+        "cwd": "d:\\Fastify_Projects\\bmh-ipd-portal"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "typescript",
+        "pattern": "$tsc",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": { "regexp": "(.*?)" },
+          "endsPattern": { "regexp": "Server listening on" }
+        }
+      },
+      "presentation": {
+        "label": "Backend API",
+        "group": "ipd",
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Frontend: preop-assess-form (dev)",
+      "type": "npm",
+      "script": "start:preop",
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "typescript",
+        "pattern": "$tsc",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": { "regexp": "(.*?)" },
+          "endsPattern": { "regexp": "bundle generation complete" }
+        }
+      },
+      "presentation": {
+        "label": "Frontend preop",
+        "group": "ipd",
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
       "type": "npm",
       "script": "start",
       "isBackground": true,

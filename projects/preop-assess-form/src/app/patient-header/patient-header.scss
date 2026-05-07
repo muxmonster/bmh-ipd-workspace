@@ -40,3 +40,27 @@
     }
   }
 }
+
+@media print {
+  .patient-header {
+    padding: 0.12rem 0.5rem 0.5rem;
+    border-radius: 0;
+    margin-top: 2lh;
+    margin-bottom: 0.4rem;
+
+    .hospital-name {
+      font-size: 1.05rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.01em;
+    }
+
+    .patient-info-grid {
+      gap: 0.25rem 1.5rem;
+
+      .info-item {
+        font-size: 0.92rem;
+        gap: 0.4rem;
+      }
+    }
+  }
+}

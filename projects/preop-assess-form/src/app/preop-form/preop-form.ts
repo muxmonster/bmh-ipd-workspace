@@ -1,9 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { map, startWith } from 'rxjs/operators';
-import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
+import { map, startWith, switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import Swal from 'sweetalert2';
 import { PatientService } from '../services/patient/patient.service';
+import { PreopService } from '../services/preop/preop.service';
 import { PatientHeader } from '../patient-header/patient-header';
 
 @Component({
@@ -16,14 +19,27 @@ import { PatientHeader } from '../patient-header/patient-header';
 export class PreopForm {
   private route = inject(ActivatedRoute);
   private patientService = inject(PatientService);
+  private preopService = inject(PreopService);
   private fb = inject(FormBuilder);
 
-  private an = toSignal(
-    this.route.queryParamMap.pipe(map((p) => p.get('an') ?? '')),
+  /** AN จาก path param */
+  an = toSignal(
+    this.route.paramMap.pipe(map((p) => p.get('an') ?? '')),
     { initialValue: '' }
   );
 
-  patient = computed(() => this.patientService.getByAn(this.an()));
+  /** ข้อมูลผู้ป่วยจาก HIS (async) */
+  patient = toSignal(
+    this.route.paramMap.pipe(
+      map((p) => p.get('an') ?? ''),
+
+      switchMap((an) => this.patientService.getByAn(an)),
+    ),
+    { initialValue: null },
+  );
+
+  /** id ของ record ที่บันทึกไว้แล้ว (null = ยังไม่เคยบันทึก) */
+  savedRecordId = signal<number | null>(null);
 
   form: FormGroup = this.fb.group({
     // ส่วนหัวฟอร์ม
@@ -129,13 +145,19 @@ export class PreopForm {
     orXray: [false],
     orCT: [false],
     orMRI: [false],
+    orOtherItemsChecked: [false],
     orOtherItems: [''],
+    orExtraItems: this.fb.array([]),
     orReceiver: [''],
 
     // วิสัญญีพยาบาล
     aneExplainMethod: [false],
     aneExplainCare: [false],
     aneHistoryAllergy: [false],
+    aneProblem: [''],
+    aneProblemBlank1: [''],
+    aneProblemBlank2: [''],
+    aneAllergyChecked: [false],
     aneAllergyNote: [''],
     aneMedUsed: [''],
     aneMedNote: [''],
@@ -147,17 +169,23 @@ export class PreopForm {
     aneHistoryDM: [false],
     aneHistoryTB: [false],
     aneHistoryLiver: [false],
+    aneHistoryOtherChecked: [false],
     aneHistoryOther: [''],
     aneSmoke: [false],
     aneDrink: [false],
+    aneOtherHabitChecked: [false],
     aneOtherHabit: [''],
+    aneMedUsedChecked: [false],
+    aneMedUsedBlank: [''],
     aneAsaClass: ['1'],
     aneAnesthesiaConcern: [''],
+    aneAnesthesiaConcernBlank: [''],
     aneMallampatiClass: ['1'],
     aneDentures: [false],
     anePlanGA: [false],
     anePlanSB: [false],
     anePlanIV: [false],
+    anePlanOtherChecked: [false],
     anePlanOther: [''],
     aneLabCBC: [false],
     aneLabUA: [false],
@@ -169,6 +197,7 @@ export class PreopForm {
     aneLabHbsAg: [false],
     aneLabCXR: [false],
     aneLabEKG: [false],
+    aneLabOtherChecked: [false],
     aneLabOther: [''],
     aneVisitor: [''],
   });
@@ -279,22 +308,86 @@ export class PreopForm {
         orSpecialEquipmentControl?.disable({ emitEvent: false });
       });
 
-    const p = this.patient();
-    if (p) {
-      this.form.patchValue({
-        surgeryDate: p.surgeryDate,
-        diagnosis: p.diagnosis,
-        surgicalProcedure: p.surgicalProcedure,
-        surgeon: p.surgeon,
-        setDate: p.setDate,
-        setBy: p.setBy,
-        surgeryType: p.surgeryType,
-      });
-    }
+    // โหลดแบบประเมินที่บันทึกไว้เมื่อ AN เปลี่ยน
+    this.route.paramMap.pipe(
+      map((p) => p.get('an') ?? ''),
+
+      switchMap((an) => (an ? this.preopService.getLatest(an) : of(null))),
+      takeUntilDestroyed(),
+    ).subscribe((record) => {
+      if (record) {
+        this.savedRecordId.set(record.id);
+
+        // สร้าง controls ใน orExtraItems ให้ตรงกับจำนวนที่บันทึกไว้ก่อน patchValue
+        const savedExtraItems = (
+          (record.orNurseData?.['orExtraItems'] as { name: string }[] | null) ?? []
+        );
+        const fa = this.orExtraItems;
+        fa.clear();
+        for (const _ of savedExtraItems) {
+          fa.push(this.fb.group({ name: [''] }));
+        }
+
+        this.form.patchValue(this.preopService.toFormValue(record));
+      } else {
+        this.savedRecordId.set(null);
+        this.orExtraItems.clear();
+      }
+    });
+  }
+
+  get orExtraItems(): FormArray {
+    return this.form.get('orExtraItems') as FormArray;
+  }
+
+  addOrExtraItem(): void {
+    this.orExtraItems.push(this.fb.group({ name: [''] }));
+  }
+
+  removeOrExtraItem(index: number): void {
+    this.orExtraItems.removeAt(index);
   }
 
   onSubmit(): void {
-    console.log(this.form.value);
+    const an = this.an();
+    const patient = this.patient();
+    if (!an || !patient) return;
+
+    const formValue = this.form.getRawValue() as Record<string, unknown>;
+    const id = this.savedRecordId();
+
+    if (id !== null) {
+      this.preopService.update(id, an, formValue).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'บันทึกสำเร็จ',
+            text: 'อัปเดตข้อมูลแบบประเมินเรียบร้อยแล้ว',
+            timer: 2000,
+            showConfirmButton: false,
+          });
+        },
+        error: () => {
+          Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่อีกครั้ง' });
+        },
+      });
+    } else {
+      this.preopService.create(an, patient.hn, formValue).subscribe({
+        next: ({ id: newId }) => {
+          this.savedRecordId.set(newId);
+          Swal.fire({
+            icon: 'success',
+            title: 'บันทึกสำเร็จ',
+            text: 'สร้างแบบประเมินใหม่เรียบร้อยแล้ว',
+            timer: 2000,
+            showConfirmButton: false,
+          });
+        },
+        error: () => {
+          Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่อีกครั้ง' });
+        },
+      });
+    }
   }
 
   printForm(): void {

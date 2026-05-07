@@ -1,0 +1,20 @@
+{
+  "folders": [
+    {
+      "name": "frontend",
+      "path": "D:/Angular_Projects/bmh-ipd/ipd-workspace"
+    },
+    {
+      "name": "backend",
+      "path": "D:/Fastify_Projects/bmh-ipd-portal"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/.angular": true,
+      "**/.next": true
+    }
+  }
+}

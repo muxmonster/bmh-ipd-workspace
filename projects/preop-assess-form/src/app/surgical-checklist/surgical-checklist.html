@@ -4,14 +4,14 @@
     <app-patient-header [patient]="patient()!" />
   } @else {
     <div class="no-patient" role="alert">
-      <p>ไม่พบข้อมูลผู้ป่วย — กรุณาระบุ <code>?an=690001111</code></p>
+      <p>ไม่พบข้อมูลผู้ป่วย — กรุณาระบุ AN ใน URL เช่น <code>/ipd/checklist/690001111</code></p>
     </div>
   }
 
   @if (patient()) {
     <!-- Step Navigation -->
     <nav class="step-nav" aria-label="ขั้นตอน">
-      <a [routerLink]="['/']" [queryParams]="{ an: patient()!.an }" class="step-btn">
+      <a [routerLink]="['/ipd/preop', patient()!.an]" class="step-btn">
         ← Step 1: แบบประเมินก่อนผ่าตัด
       </a>
       <span class="step-current">Step 2: Surgical Checklist</span>

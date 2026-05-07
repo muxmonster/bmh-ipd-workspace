@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { PatientService } from '../services/patient/patient.service';
 import { PatientHeader } from '../patient-header/patient-header';
@@ -18,12 +18,14 @@ export class SurgicalChecklist {
   private patientService = inject(PatientService);
   private fb = inject(FormBuilder);
 
-  private an = toSignal(
-    this.route.queryParamMap.pipe(map((p) => p.get('an') ?? '')),
-    { initialValue: '' }
-  );
+  patient = toSignal(
+    this.route.paramMap.pipe(
+      map((p) => p.get('an') ?? ''),
 
-  patient = computed(() => this.patientService.getByAn(this.an()));
+      switchMap((an) => this.patientService.getByAn(an)),
+    ),
+    { initialValue: null },
+  );
 
   form: FormGroup = this.fb.group({
     // ===== SIGN IN =====

@@ -4,22 +4,22 @@
     <app-patient-header [patient]="patient()!" />
   } @else {
     <div class="no-patient" role="alert">
-      <p>ไม่พบข้อมูลผู้ป่วย AN: <strong>{{ form.value.surgeryType }}</strong></p>
-      <p class="hint">กรุณาระบุ AN ผ่าน query string เช่น <code>?an=690001111</code></p>
+      <p>ไม่พบข้อมูลผู้ป่วย AN: <strong>{{ an() }}</strong></p>
+      <p class="hint">กรุณาระบุ AN ใน URL เช่น <code>/ipd/preop/690001111</code></p>
     </div>
   }
 
   @if (patient()) {
     <nav class="step-nav" aria-label="ขั้นตอน">
       <span class="step-current">Step 1: แบบประเมินก่อนผ่าตัด</span>
-      <a [routerLink]="['/checklist']" [queryParams]="{ an: patient()!.an }" class="step-btn">
+      <a [routerLink]="['/ipd/checklist', patient()!.an]" class="step-btn">
         Step 2: Surgical Checklist →
       </a>
     </nav>
   }
 
   @if (patient()) {
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-wrapper" novalidate>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-wrapper" novalidate lang="en-US">
 
       <!-- ====== ส่วนหัวฟอร์ม ====== -->
       <div class="form-title">
@@ -30,7 +30,7 @@
       <div class="form-header-grid">
         <div class="field-row">
           <label for="surgeryDate">วันที่ผ่าตัด</label>
-          <input id="surgeryDate" type="text" formControlName="surgeryDate" />
+          <input id="surgeryDate" type="date" formControlName="surgeryDate" />
         </div>
         <div class="field-row">
           <label for="diagnosis">Dx</label>
@@ -47,7 +47,7 @@
         <div class="field-row-group">
           <div class="field-row">
             <label for="setDate">ว.ด.ป. ที่ set ผ่าตัด</label>
-            <input id="setDate" type="text" formControlName="setDate" />
+            <input id="setDate" type="date" formControlName="setDate" />
           </div>
           <div class="field-row">
             <label for="setBy">ผู้ set</label>
@@ -526,9 +526,21 @@
             <label class="checkbox-label block"><input type="checkbox" formControlName="orCT" /> CT</label>
             <label class="checkbox-label block"><input type="checkbox" formControlName="orMRI" /> MRI</label>
             <div class="text-row">
+              <label class="checkbox-label" for="orOtherItemsChecked">
+                <input id="orOtherItemsChecked" type="checkbox" formControlName="orOtherItemsChecked" />
+              </label>
               <label for="orOtherItems">เวชภัณฑ์อื่นๆ</label>
               <input id="orOtherItems" type="text" formControlName="orOtherItems" class="inline-input" />
             </div>
+            <ng-container formArrayName="orExtraItems">
+              @for (item of orExtraItems.controls; track $index) {
+                <div class="text-row" [formGroupName]="$index">
+                  <input type="text" formControlName="name" class="inline-input" [attr.aria-label]="'ชื่อเวชภัณฑ์ ' + ($index + 1)" />
+                  <button type="button" class="btn-remove-item" (click)="removeOrExtraItem($index)" aria-label="ลบรายการ">✕</button>
+                </div>
+              }
+            </ng-container>
+            <button type="button" class="btn-add-item" (click)="addOrExtraItem()">+ เพิ่มรายการ</button>
           </div>
 
           <div class="text-row signer-row">
@@ -546,12 +558,22 @@
           <label class="checkbox-label block"><input type="checkbox" formControlName="aneHistoryAllergy" /> เคยได้รับการระงับความรู้สึก</label>
 
           <div class="text-row">
-            <label for="aneAllergyNote">เคยแพ้</label>
-            <input id="aneAllergyNote" type="text" formControlName="aneAllergyNote" class="inline-input" />
+            <span>ปัญหา</span>
+            <input type="text" formControlName="aneProblem" class="inline-input" />
           </div>
           <div class="text-row">
-            <label for="aneMedNote">ยาที่ใช้</label>
-            <input id="aneMedNote" type="text" formControlName="aneMedNote" class="inline-input" />
+            <input type="text" formControlName="aneProblemBlank1" class="inline-input" aria-label="ปัญหาเพิ่มเติม 1" />
+          </div>
+          <div class="text-row">
+            <input type="text" formControlName="aneProblemBlank2" class="inline-input" aria-label="ปัญหาเพิ่มเติม 2" />
+          </div>
+
+          <div class="text-row">
+            <label class="checkbox-label" for="aneAllergyChecked">
+              <input id="aneAllergyChecked" type="checkbox" formControlName="aneAllergyChecked" />
+            </label>
+            <label for="aneAllergyNote">เคยแพ้ยา</label>
+            <input id="aneAllergyNote" type="text" formControlName="aneAllergyNote" class="inline-input" />
           </div>
 
           <div class="sub-section">
@@ -565,14 +587,30 @@
             <label class="checkbox-label inline"><input type="checkbox" formControlName="aneHistoryTB" /> TB</label>
             <label class="checkbox-label inline"><input type="checkbox" formControlName="aneHistoryLiver" /> โรคตับ</label>
             <div class="text-row">
+              <label class="checkbox-label" for="aneHistoryOtherChecked">
+                <input id="aneHistoryOtherChecked" type="checkbox" formControlName="aneHistoryOtherChecked" />
+              </label>
               <label for="aneHistoryOther">อื่นๆ</label>
               <input id="aneHistoryOther" type="text" formControlName="aneHistoryOther" class="inline-input" />
             </div>
             <label class="checkbox-label inline"><input type="checkbox" formControlName="aneDrink" /> ดื่มสุรา</label>
             <label class="checkbox-label inline"><input type="checkbox" formControlName="aneSmoke" /> บุหรี่</label>
             <div class="text-row">
+              <label class="checkbox-label" for="aneOtherHabitChecked">
+                <input id="aneOtherHabitChecked" type="checkbox" formControlName="aneOtherHabitChecked" />
+              </label>
               <label for="aneOtherHabit">อื่นๆ</label>
               <input id="aneOtherHabit" type="text" formControlName="aneOtherHabit" class="inline-input" />
+            </div>
+            <div class="text-row">
+              <label class="checkbox-label" for="aneMedUsedChecked">
+                <input id="aneMedUsedChecked" type="checkbox" formControlName="aneMedUsedChecked" />
+              </label>
+              <label for="aneMedUsed">ยาที่ใช้</label>
+              <input id="aneMedUsed" type="text" formControlName="aneMedUsed" class="inline-input" />
+            </div>
+            <div class="text-row">
+              <input type="text" formControlName="aneMedUsedBlank" class="inline-input" aria-label="ยาที่ใช้เพิ่มเติม" />
             </div>
           </div>
 
@@ -590,8 +628,11 @@
           </div>
 
           <div class="text-row">
-            <label for="aneAnesthesiaConcern">ภาวะเลี้ยงต่อการระงับความรู้สึก</label>
+            <label for="aneAnesthesiaConcern">ภาวะเสี่ยงต่อการระงับความรู้สึก</label>
             <input id="aneAnesthesiaConcern" type="text" formControlName="aneAnesthesiaConcern" class="inline-input" />
+          </div>
+          <div class="text-row">
+            <input type="text" formControlName="aneAnesthesiaConcernBlank" class="inline-input" aria-label="ภาวะเสี่ยงเพิ่มเติม" />
           </div>
 
           <!-- Mallampati Class -->
@@ -615,6 +656,9 @@
             <label class="checkbox-label inline"><input type="checkbox" formControlName="anePlanSB" /> SB</label>
             <label class="checkbox-label inline"><input type="checkbox" formControlName="anePlanIV" /> iv</label>
             <div class="text-row">
+              <label class="checkbox-label" for="anePlanOtherChecked">
+                <input id="anePlanOtherChecked" type="checkbox" formControlName="anePlanOtherChecked" />
+              </label>
               <label for="anePlanOther">อื่นๆ</label>
               <input id="anePlanOther" type="text" formControlName="anePlanOther" class="inline-input" />
             </div>
@@ -634,7 +678,11 @@
               <label class="checkbox-label"><input type="checkbox" formControlName="aneLabCXR" /> CXR</label>
               <label class="checkbox-label"><input type="checkbox" formControlName="aneLabEKG" /> EKG</label>
               <div class="lab-other">
-                <label>อื่นๆ <input type="text" formControlName="aneLabOther" class="inline-input" /></label>
+                <label class="checkbox-label" for="aneLabOtherChecked">
+                  <input id="aneLabOtherChecked" type="checkbox" formControlName="aneLabOtherChecked" />
+                </label>
+                <label for="aneLabOther">อื่นๆ</label>
+                <input id="aneLabOther" type="text" formControlName="aneLabOther" class="inline-input" />
               </div>
             </div>
           </div>
