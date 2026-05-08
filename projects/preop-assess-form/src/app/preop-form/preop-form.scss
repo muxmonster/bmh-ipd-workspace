@@ -31,6 +31,32 @@
 
     &:hover { text-decoration: underline; }
   }
+
+  .step-nav-actions {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .step-icon-btn {
+    width: 2rem;
+    height: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #93addf;
+    border-radius: 0.35rem;
+    background: #fff;
+    color: #1a56a0;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+
+    &:hover {
+      background: #e8f0ff;
+    }
+  }
 }
 
 .no-patient {

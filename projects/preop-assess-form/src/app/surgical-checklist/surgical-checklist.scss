@@ -51,6 +51,32 @@
     padding: 0.15rem 0.6rem;
     border-radius: 1rem;
   }
+
+  .step-nav-actions {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .step-icon-btn {
+    width: 2rem;
+    height: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #93addf;
+    border-radius: 0.35rem;
+    background: #fff;
+    color: #1a56a0;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+
+    &:hover {
+      background: #e8f0ff;
+    }
+  }
 }
 
 /* ====== Form wrapper ====== */
@@ -370,47 +396,83 @@
   }
 }
 
-@page { size: A4 landscape; margin: 8mm 10mm; }
+@page { size: A4 landscape; margin: 4mm 7mm; }
 
 @media print {
   .form-actions,
-  .step-nav { display: none !important; }
+  .step-nav {
+    display: none !important;
+  }
+
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  app-patient-header {
+    display: block !important;
+    margin-bottom: 0.2rem !important;
+  }
 
   .checklist-page {
     max-width: 100%;
-    font-size: 0.72rem;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 0.67rem;
+    line-height: 1.15;
   }
 
   .form-wrapper {
     box-shadow: none;
     padding: 0;
+    border: 0;
   }
 
   .form-title {
-    padding: 0.3rem 0;
+    padding: 0.08rem 0 0.04rem;
     text-align: center;
-    h1 { font-size: 1rem; margin: 0; }
-    h2 { font-size: 0.85rem; margin: 0; }
+    border-bottom: 0.5pt solid #bbb;
+
+    h1 {
+      font-size: 0.86rem;
+      margin: 0;
+    }
+
+    h2 {
+      font-size: 0.72rem;
+      margin: 0;
+    }
   }
 
   .three-col-grid {
     grid-template-columns: 1fr 1fr 1fr !important;
     gap: 0;
+    border-top: 0;
+
+    section {
+      padding: 0.3rem 0.42rem;
+    }
   }
 
-  .col-sign-in,
-  .col-time-out,
-  .col-sign-out {
+  .col-signin,
+  .col-timeout,
+  .col-signout {
     break-inside: avoid;
     page-break-inside: avoid;
   }
 
-  .section-header {
-    font-size: 0.75rem !important;
+  .section-title {
+    font-size: 0.66rem !important;
     padding: 0.15rem !important;
     background: none !important;
     color: #000 !important;
     border-bottom: 1pt solid #000;
+    margin-bottom: 0.16rem;
+
+    .section-subtitle {
+      font-size: 0.58rem !important;
+    }
   }
 
   input[type='text'],
@@ -422,15 +484,32 @@
     border-radius: 0;
     background: transparent !important;
     padding: 0 0.1rem;
-    font-size: 0.68rem;
+    font-size: 0.62rem;
   }
 
   .checklist-item {
-    font-size: 0.68rem;
-    padding: 0.05rem 0;
+    margin-bottom: 0.28rem;
+    padding: 0.04rem 0;
+    font-size: 0.62rem;
+  }
+
+  .item-text,
+  .sub-item .sub-label,
+  .checkbox-label,
+  .by-line {
+    font-size: 0.6rem;
   }
 
   .radio-label {
-    font-size: 0.65rem;
+    font-size: 0.58rem;
+  }
+
+  .sub-item,
+  .sub-role,
+  .signature-section,
+  .timeout-continued {
+    margin: 0.2rem 0;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
   }
 }

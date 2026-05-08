@@ -8,13 +8,34 @@
     </div>
   }
 
-  @if (patient()) {
+  @if (patient() && !printMode()) {
     <!-- Step Navigation -->
     <nav class="step-nav" aria-label="ขั้นตอน">
       <a [routerLink]="['/ipd/preop', patient()!.an]" class="step-btn">
         ← Step 1: แบบประเมินก่อนผ่าตัด
       </a>
       <span class="step-current">Step 2: Surgical Checklist</span>
+
+      <div class="step-nav-actions" role="group" aria-label="การทำงานแบบรวม">
+        <button
+          type="button"
+          class="step-icon-btn"
+          (click)="onSaveAll()"
+          aria-label="บันทึกรวมทุกแท็บ"
+          title="บันทึกรวมทุกแท็บ"
+        >
+          <span aria-hidden="true">💾</span>
+        </button>
+        <button
+          type="button"
+          class="step-icon-btn"
+          (click)="onPrintAll()"
+          aria-label="พิมพ์ PDF รวม"
+          title="พิมพ์ PDF รวม"
+        >
+          <span aria-hidden="true">🧾</span>
+        </button>
+      </div>
     </nav>
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-wrapper" novalidate>
@@ -427,10 +448,12 @@
       </div>
 
       <!-- Actions -->
-      <div class="form-actions">
-        <button type="submit" class="btn-save">บันทึก</button>
-        <button type="button" class="btn-print" (click)="printForm()">🖨 พิมพ์ PDF</button>
-      </div>
+      @if (!printMode()) {
+        <div class="form-actions">
+          <button type="submit" class="btn-save">บันทึก</button>
+          <button type="button" class="btn-print" (click)="printForm()">🖨 พิมพ์ PDF</button>
+        </div>
+      }
     </form>
   }
 </div>

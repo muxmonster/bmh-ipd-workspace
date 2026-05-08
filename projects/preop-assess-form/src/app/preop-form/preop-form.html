@@ -9,12 +9,33 @@
     </div>
   }
 
-  @if (patient()) {
+  @if (patient() && !printMode()) {
     <nav class="step-nav" aria-label="ขั้นตอน">
       <span class="step-current">Step 1: แบบประเมินก่อนผ่าตัด</span>
       <a [routerLink]="['/ipd/checklist', patient()!.an]" class="step-btn">
         Step 2: Surgical Checklist →
       </a>
+
+      <div class="step-nav-actions" role="group" aria-label="การทำงานแบบรวม">
+        <button
+          type="button"
+          class="step-icon-btn"
+          (click)="onSaveAll()"
+          aria-label="บันทึกรวมทุกแท็บ"
+          title="บันทึกรวมทุกแท็บ"
+        >
+          <span aria-hidden="true">💾</span>
+        </button>
+        <button
+          type="button"
+          class="step-icon-btn"
+          (click)="onPrintAll()"
+          aria-label="พิมพ์ PDF รวม"
+          title="พิมพ์ PDF รวม"
+        >
+          <span aria-hidden="true">🧾</span>
+        </button>
+      </div>
     </nav>
   }
 
@@ -484,7 +505,7 @@
 
           <label class="checkbox-label block"><input type="checkbox" formControlName="orIntro" /> แนะนำตนเองและสิ่งแวดล้อม</label>
           <label class="checkbox-label block"><input type="checkbox" formControlName="orORInstruction" /> การปฏิบัติตัวระหว่างอยู่ในห้องผ่าตัด</label>
-          <label class="checkbox-label block"><input type="checkbox" formControlName="orExplainSurgery" /> อธิบายการผ่าตัด ครั้งๆ</label>
+          <label class="checkbox-label block"><input type="checkbox" formControlName="orExplainSurgery" /> อธิบายการผ่าตัด คร่าวๆ</label>
           <label class="checkbox-label block"><input type="checkbox" formControlName="orAnswerQuestions" /> ตอบข้อซักถาม</label>
           <label class="checkbox-label block"><input type="checkbox" formControlName="orCheckConsent" /> ตรวจสอบการยินยอมก่อนผ่าตัด</label>
           <label class="checkbox-label block"><input type="checkbox" formControlName="orCheckCleanliness" /> ตรวจสอบความสะอาดทั่วไปและของมีค่าท่าที่ใช้ผ่าตัด</label>
@@ -695,10 +716,12 @@
       </div>
 
       <!-- ====== ปุ่ม ====== -->
-      <div class="form-actions">
-        <button type="submit" class="btn-save">บันทึก</button>
-        <button type="button" class="btn-print" (click)="printForm()">🖨 พิมพ์ PDF</button>
-      </div>
+      @if (!printMode()) {
+        <div class="form-actions">
+          <button type="submit" class="btn-save">บันทึก</button>
+          <button type="button" class="btn-print" (click)="printForm()">🖨 พิมพ์ PDF</button>
+        </div>
+      }
 
     </form>
   }

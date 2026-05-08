@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { map, startWith, switchMap } from 'rxjs/operators';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { debounceTime, map, startWith, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { AssessmentDraftService } from '../services/assessment-draft/assessment-draft.service';
+import { AssessmentWorkflowService } from '../services/assessment-workflow/assessment-workflow.service';
 import { PatientService } from '../services/patient/patient.service';
 import { PreopService } from '../services/preop/preop.service';
 import { PatientHeader } from '../patient-header/patient-header';
@@ -20,26 +22,41 @@ export class PreopForm {
   private route = inject(ActivatedRoute);
   private patientService = inject(PatientService);
   private preopService = inject(PreopService);
+  private draftService = inject(AssessmentDraftService);
+  private workflowService = inject(AssessmentWorkflowService);
   private fb = inject(FormBuilder);
 
+  anOverride = input('');
+  printModeInput = input<boolean | null>(null);
+  ready = output<void>();
+
   /** AN จาก path param */
-  an = toSignal(
+  private routeAn = toSignal(
     this.route.paramMap.pipe(map((p) => p.get('an') ?? '')),
     { initialValue: '' }
   );
 
+  an = computed(() => this.anOverride() || this.routeAn());
+
   /** ข้อมูลผู้ป่วยจาก HIS (async) */
   patient = toSignal(
-    this.route.paramMap.pipe(
-      map((p) => p.get('an') ?? ''),
-
+    toObservable(this.an).pipe(
       switchMap((an) => this.patientService.getByAn(an)),
     ),
     { initialValue: null },
   );
 
+  private routePrintMode = toSignal(
+    this.route.queryParamMap.pipe(map((params) => params.get('printMode') === '1')),
+    { initialValue: false },
+  );
+
+  printMode = computed(() => this.printModeInput() ?? this.routePrintMode());
+
   /** id ของ record ที่บันทึกไว้แล้ว (null = ยังไม่เคยบันทึก) */
   savedRecordId = signal<number | null>(null);
+  private formReady = signal(false);
+  private readySent = signal(false);
 
   form: FormGroup = this.fb.group({
     // ส่วนหัวฟอร์ม
@@ -309,31 +326,59 @@ export class PreopForm {
       });
 
     // โหลดแบบประเมินที่บันทึกไว้เมื่อ AN เปลี่ยน
-    this.route.paramMap.pipe(
-      map((p) => p.get('an') ?? ''),
-
+    toObservable(this.an).pipe(
       switchMap((an) => (an ? this.preopService.getLatest(an) : of(null))),
       takeUntilDestroyed(),
     ).subscribe((record) => {
+      const activeAn = this.an();
+      if (!activeAn) {
+        this.formReady.set(false);
+        return;
+      }
+
+      const draftValue = activeAn ? this.draftService.getPreopDraft(activeAn) : null;
+      const recordFormValue = record ? this.preopService.toFormValue(record) : null;
+      this.formReady.set(false);
+
       if (record) {
         this.savedRecordId.set(record.id);
-
-        // สร้าง controls ใน orExtraItems ให้ตรงกับจำนวนที่บันทึกไว้ก่อน patchValue
-        const savedExtraItems = (
-          (record.orNurseData?.['orExtraItems'] as { name: string }[] | null) ?? []
-        );
-        const fa = this.orExtraItems;
-        fa.clear();
-        for (const _ of savedExtraItems) {
-          fa.push(this.fb.group({ name: [''] }));
-        }
-
-        this.form.patchValue(this.preopService.toFormValue(record));
       } else {
         this.savedRecordId.set(null);
-        this.orExtraItems.clear();
       }
+
+      this.syncOrExtraItems(
+        (draftValue?.['orExtraItems'] as { name: string }[] | undefined)
+        ?? (recordFormValue?.['orExtraItems'] as { name: string }[] | undefined)
+        ?? [],
+      );
+
+      if (recordFormValue) {
+        this.form.patchValue(recordFormValue);
+      }
+
+      if (draftValue) {
+        this.form.patchValue(draftValue);
+      }
+
+      this.formReady.set(true);
     });
+
+    effect(() => {
+      if (this.readySent()) return;
+      if (!this.patient()) return;
+      if (!this.formReady()) return;
+
+      this.readySent.set(true);
+      this.ready.emit();
+    });
+
+    this.form.valueChanges
+      .pipe(debounceTime(120), takeUntilDestroyed())
+      .subscribe(() => {
+        const activeAn = this.an();
+        if (!activeAn) return;
+        this.draftService.savePreopDraft(activeAn, this.form.getRawValue() as Record<string, unknown>);
+      });
   }
 
   get orExtraItems(): FormArray {
@@ -346,6 +391,14 @@ export class PreopForm {
 
   removeOrExtraItem(index: number): void {
     this.orExtraItems.removeAt(index);
+  }
+
+  private syncOrExtraItems(items: { name: string }[]): void {
+    const fa = this.orExtraItems;
+    fa.clear();
+    for (const _ of items) {
+      fa.push(this.fb.group({ name: [''] }));
+    }
   }
 
   onSubmit(): void {
@@ -392,6 +445,64 @@ export class PreopForm {
 
   printForm(): void {
     window.print();
+  }
+
+  onSaveAll(): void {
+    const patient = this.patient();
+    if (!patient) return;
+
+    const preopValue = this.form.getRawValue() as Record<string, unknown>;
+    this.workflowService.saveAll(patient.an, patient.hn, preopValue).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'บันทึกรวมสำเร็จ',
+          text: 'บันทึกข้อมูลทั้ง Step 1 และ Step 2 เรียบร้อยแล้ว',
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      },
+      error: () => {
+        Swal.fire({
+          icon: 'error',
+          title: 'เกิดข้อผิดพลาด',
+          text: 'ไม่สามารถบันทึกรวมทุก Step ได้ กรุณาลองใหม่อีกครั้ง',
+        });
+      },
+    });
+  }
+
+  onPrintAll(): void {
+    const patient = this.patient();
+    if (!patient) return;
+
+    const printWindow = window.open('', '_blank', 'popup=yes,width=1200,height=900');
+    if (!printWindow) {
+      Swal.fire({
+        icon: 'error',
+        title: 'ไม่สามารถเปิดหน้าพิมพ์ได้',
+        text: 'กรุณาอนุญาต popup ของเบราว์เซอร์แล้วลองใหม่อีกครั้ง',
+      });
+      return;
+    }
+
+    printWindow.document.write('<title>Preparing print...</title><p style="font-family:Sarabun,sans-serif;padding:16px;">กำลังเตรียมไฟล์พิมพ์รวม...</p>');
+    printWindow.document.close();
+
+    const preopValue = this.form.getRawValue() as Record<string, unknown>;
+    this.workflowService.saveAll(patient.an, patient.hn, preopValue).subscribe({
+      next: () => {
+        printWindow.location.href = `/ipd/print-all-v2/${encodeURIComponent(patient.an)}?autoPrint=1&autoClose=1`;
+      },
+      error: () => {
+        printWindow.close();
+        Swal.fire({
+          icon: 'error',
+          title: 'เกิดข้อผิดพลาด',
+          text: 'ไม่สามารถเตรียมข้อมูลสำหรับพิมพ์ PDF รวมได้',
+        });
+      },
+    });
   }
 
 

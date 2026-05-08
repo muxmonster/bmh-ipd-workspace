@@ -1,0 +1,26 @@
+<div class="print-all-page">
+  @if (!autoPrint()) {
+    <div class="toolbar">
+    <a [routerLink]="['/ipd/preop', an()]" class="toolbar-link" aria-label="กลับไปหน้า Step 1">
+      ← กลับไป Step 1
+    </a>
+
+    <button type="button" class="toolbar-print" (click)="printPreview()" aria-label="พิมพ์ PDF รวม">
+      <span aria-hidden="true">🧾</span>
+      <span>พิมพ์ PDF รวม</span>
+    </button>
+    </div>
+  }
+
+  <div class="preview-grid">
+    <section class="preview-card" aria-label="Step 1 preview">
+      <h2>Step 1: แบบประเมินก่อนผ่าตัด</h2>
+      <app-preop-form [anOverride]="an()" [printModeInput]="true" (ready)="onSectionReady()"></app-preop-form>
+    </section>
+
+    <section class="preview-card" aria-label="Step 2 preview">
+      <h2>Step 2: Surgical Checklist</h2>
+      <app-surgical-checklist [anOverride]="an()" [printModeInput]="true" (ready)="onSectionReady()"></app-surgical-checklist>
+    </section>
+  </div>
+</div>

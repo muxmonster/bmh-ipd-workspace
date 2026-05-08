@@ -2,11 +2,11 @@
   "folders": [
     {
       "name": "frontend",
-      "path": "D:/Angular_Projects/bmh-ipd/ipd-workspace"
+      "path": "/Users/muxmonster/Documents/angular-projects/bmh-ipd-workspace"
     },
     {
       "name": "backend",
-      "path": "D:/Fastify_Projects/bmh-ipd-portal"
+      "path": "/Users/muxmonster/Documents/angular-projects/bmh-ipd-portal"
     }
   ],
   "settings": {
